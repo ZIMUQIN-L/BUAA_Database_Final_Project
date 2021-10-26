@@ -66,7 +66,7 @@ export default {
         // window.open('http://localhost:8080/#/student/homepage');
       }
       else if (this.identity == '教师') {
-        this.$router.push('/teacher/lesson');
+        this.$router.push('/teacher/login');
       }
       else if (this.identity == '管理员') {
         this.$router.push('/admin/login');

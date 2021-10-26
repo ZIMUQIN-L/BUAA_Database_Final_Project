@@ -1,55 +1,14 @@
 <template>
+<div>
+  
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title>
-          教务系统
-        </q-toolbar-title>
-
-        <div>
-          <q-btn
-          flat
-          align="around"
-          label = "设置"
-          icon="lightbulb_outline"
-          @click="setting"
-        />
-        </div>
-
-      
-
-        <div>
-          <q-btn
-          label = "退出"
-          flat
-          align="around"
-          icon="logout"
-          @click="logout"
-        />
-        </div>
-      </q-toolbar>
-      <q-img 
-        src="../statics/blue-trianglify.jpg"
-        class="header-image absolute-top"
-      />
-    </q-header>
-
-      
     <q-page-container>
       <keep-alive>
         <router-view />
       </keep-alive>
     </q-page-container>
   </q-layout>
+</div>
 </template>
 
 <script>
@@ -60,6 +19,7 @@ export default defineComponent({
   name: 'MainLayout',
 
   setup () {
+    // var stuId = this.$route.params.studentId
     const leftDrawerOpen = ref(false)
 
     return {
@@ -76,7 +36,10 @@ export default defineComponent({
     },
     setting:function() {
       this.$router.push('/student/settings')
-    }
+    },
+    // goToHomepage() {
+    //   this.$router.push('/student/homepage/' + this.stuId)
+    // }
   }
 })
 

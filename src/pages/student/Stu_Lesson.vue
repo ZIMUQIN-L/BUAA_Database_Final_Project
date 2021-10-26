@@ -1,5 +1,102 @@
 <template>
-  <q-page class="">
+      <q-drawer
+        v-model="leftDrawerOpen"
+        show-if-above
+        :width="200"
+        :breakpoint="600"
+        class="menu-image"
+      >
+        <q-scroll-area style="height: calc(100% - 150px); margin-top: 20px; border-right: 0px solid #ddd">
+          <q-list>
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToHomepage"
+              >
+              <q-item-section avatar>
+                <q-icon name="home" />
+              </q-item-section>
+
+              <q-item-section>
+                主页
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              active
+              @click="goToLesson">
+              <q-item-section avatar>
+                <q-icon name="school" />
+              </q-item-section>
+
+              <q-item-section>
+                课程
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToInfo">
+            <q-item-section avatar>
+                <q-icon name="import_contacts" />
+            </q-item-section>
+
+              <q-item-section>
+                信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToSettings">
+              <q-item-section avatar>
+                <q-icon name="settings" />
+              </q-item-section>
+
+              <q-item-section>
+                设置
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-scroll-area>
+      </q-drawer>
+    <q-header elevated>
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
+
+        <q-toolbar-title>
+          教务系统
+        </q-toolbar-title>
+
+      
+
+        <div>
+          <q-btn
+          label = "退出"
+          flat
+          align="around"
+          icon="logout"
+          @click="logout"
+        />
+        </div>
+      </q-toolbar>
+      <q-img 
+        src="../../statics/blue-trianglify.jpg"
+        class="header-image absolute-top"
+      />
+    </q-header>
+  <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>学生课程列表</b></h5> 
     </div>
@@ -99,57 +196,14 @@ const columns = [
     sortable: true
   },
   { name: 'id', align: 'center', label: '课程号', field: 'id', sortable: true },
+  { name: 'name', align: 'center', label: '课程名称', field: 'name', sortable: true },
+  { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
+  { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
+  { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
   { name: 'capacity', label: '课程容量', field: 'capacity', sortable: true },
+  { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
   { name: 'teacher', label: '授课教师', field: 'teacher', sortable: true}
 ]
-
-// var rows_selected = [
-//   {
-//     name: '离散数学',
-//     capacity: 57,
-//     id: 1,
-//     teacher: '马殿富'
-//   },
-//   {
-//     name: '基物实验',
-//     capacity: 1000,
-//     id: 4,
-//     teacher: '王文玲'
-//   },
-//   {
-//     name: '操作系统',
-//     capacity: 75,
-//     id: 2,
-//     teacher: '王雷'
-//   },
-//   {
-//     name: '形式语言与自动机',
-//     capacity: 50,
-//     id: 6,
-//     teacher: '胡春明'
-//   },
-//   {
-//     name: '高等代数',
-//     capacity: 85,
-//     id: 7,
-//     teacher: '孙晓伟'
-//   }
-// ]
-
-// var rows_unselected = [
-//   {
-//     name: '数据结构',
-//     capacity: 57,
-//     id: 3,
-//     teacher: '李波'
-//   },
-//   {
-//     name: '计算机组成',
-//     capacity: 63,
-//     id: 5,
-//     teacher: '高小鹏'
-//   }
-// ]
 
 var rows_selected = [];
 var rows_unselected = [];
@@ -160,10 +214,12 @@ export default({
     const loading = ref(false)
     const filter = ref('')
     const loading_1 = ref(false)
-    const filter_1 = ref(''),
+    const filter_1 = ref('')
+    const leftDrawerOpen = ref(false)
+    // var stuId = this.$route.params.studentId
     // rows_selected = [],
     // rows_unselected = [],
-    studentId = this.$route.params.studentId
+    var studentId = this.$route.params.studentId
 
     return {
       filter,
@@ -176,7 +232,11 @@ export default({
       rows_selected,
       rows_unselected,
       tab: ref('selected_course'),
-      studentId
+      studentId,
+      leftDrawerOpen,
+      toggleLeftDrawer () {
+        leftDrawerOpen.value = !leftDrawerOpen.value
+      },
     }
   },
 
@@ -185,6 +245,21 @@ export default({
   },
 
   methods:{
+    logout:function() {
+      this.$router.push('/')
+    },
+    goToHomepage() {
+      this.$router.push('/student/homepage/' + this.$route.params.studentId)
+    },
+    goToLesson() {
+      this.$router.push('/student/lesson/' + this.$route.params.studentId)
+    },
+    goToSettings() {
+      this.$router.push('/student/settings/' + this.$route.params.studentId)
+    },
+    goToInfo() {
+      this.$router.push('/student/info/' + this.$route.params.studentId)
+    },
     deleteSelectedCourse(){
       // console.log(this.studentId);
       var c_id = "";
@@ -283,8 +358,8 @@ let _this = this
             });
         this.unselected = [];
         this.$q.notify({
-  message: '课程已经添加！',
-  color: 'green-4'})
+          message: '课程已经添加！',
+          color: 'green-4'})
       })
     },
     checkSelectedCourse(){
@@ -346,6 +421,19 @@ let _this = this
   }
 })
 </script>
+
+<style>
+  .bg-image {
+   background-image: url("../../statics/blue-trianglify.jpg");
+   background-repeat: no-repeat; /* Do not repeat the image */
+   background-size: cover; /* Resize the background image to cover the entire container */
+  }
+  .menu-image {
+   background-image: url("../../statics/blue-trianglify-menu.jpg");
+   background-repeat: no-repeat; /* Do not repeat the image */
+   background-size: cover; /* Resize the background image to cover the entire container */
+  }
+</style>>
 
 <style lang="sass">
 .my-sticky-header-table

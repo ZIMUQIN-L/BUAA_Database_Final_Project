@@ -112,7 +112,7 @@ export default {
           // handle success
           // this.$router.push?('/student/homepage');
           if (!response.data.status) {
-            _this.$router.push('/student/lesson/' + _this.studentId);
+            _this.$router.push('/student/homepage/' + _this.studentId);
             console.log(response);
           }
           else {

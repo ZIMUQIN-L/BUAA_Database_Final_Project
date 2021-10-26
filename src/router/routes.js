@@ -24,10 +24,11 @@ const routes = [
     path: '/',
     component: () => import('layouts/StuLayout.vue'),
     children: [
-      { path: 'student/homepage', component: () => import('src/pages/student/Stu_Homepage.vue') },
+      { path: 'student/homepage/:studentId', component: () => import('src/pages/student/Stu_Homepage.vue') },
       { path: 'student/lesson/:studentId', component: () => import('src/pages/student/Stu_Lesson.vue') },
-      { path: 'student/exam', component: () => import('src/pages/student/Stu_Exam.vue') },
-      { path: 'student/settings', component: () => import('src/pages/student/Stu_Settings.vue') },
+      { path: 'student/exam/:studentId', component: () => import('src/pages/student/Stu_Exam.vue') },
+      { path: 'student/settings/:studentId', component: () => import('src/pages/student/Stu_Settings.vue') },
+      { path: 'student/info/:studentId', component: () => import('src/pages/student/Stu_Info.vue') },
     ]
   },
 
