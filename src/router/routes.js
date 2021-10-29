@@ -49,8 +49,8 @@ const routes = [
     children: [
       { path: 'admin/homepage', component: () => import('src/pages/admin/Admin_Homepage.vue') },
       { path: 'admin/lesson', component: () => import('src/pages/admin/Admin_Lesson.vue') },
-      { path: 'admin/exam', component: () => import('src/pages/admin/Admin_Exam.vue') },
-      { path: 'admin/settings', component: () => import('src/pages/admin/Admin_Settings.vue') }
+      { path: 'admin/student', component: () => import('src/pages/admin/Admin_Student.vue') },
+      { path: 'admin/sc', component: () => import('src/pages/admin/Admin_Sc.vue') }
     ]
   },
 

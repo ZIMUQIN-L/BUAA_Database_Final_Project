@@ -1,5 +1,5 @@
 <template>
-      <q-drawer
+<q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         :width="200"
@@ -25,27 +25,27 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToLesson">
               <q-item-section avatar>
-                <q-icon name="school" />
+                <q-icon name="import_contacts" />
               </q-item-section>
 
               <q-item-section>
-                课程
+                课程信息
               </q-item-section>
             </q-item>
 
             <q-item
               clickable 
+              active
               v-ripple
               @click="goToInfo">
             <q-item-section avatar>
-                <q-icon name="import_contacts" />
+                <q-icon name="school" />
             </q-item-section>
 
               <q-item-section>
-                信息
+                学生信息
               </q-item-section>
             </q-item>
 
@@ -54,11 +54,11 @@
               v-ripple
               @click="goToSettings">
               <q-item-section avatar>
-                <q-icon name="settings" />
+                <q-icon name="check_circle" />
               </q-item-section>
 
               <q-item-section>
-                设置
+                学生选课
               </q-item-section>
             </q-item>
           </q-list>
@@ -98,23 +98,9 @@
     </q-header>
   <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
-      <h5 align = "center"><b>学生课程列表</b></h5> 
+      <h5 align = "center"><b>学生信息表</b></h5> 
     </div>
-    <div>
-      <q-tabs
-        v-model="tab"
-        dense
-        class="bg-white text-blue shadow-2"
-        inline-label
-        align="left"
-      >
-        <q-tab name="selected_course" icon="check_box" label="已选课程" @click="checkSelectedCourse"></q-tab>
-        <q-tab name="unselected_course" icon="add_box" label="未选课程" @click="checkUnselectedCourse"></q-tab>
-      </q-tabs>
-      <q-separator />
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="selected_course">
-          <div>
+    <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
               :rows="rows_selected"
@@ -143,40 +129,100 @@
               </template>
             </q-table>
           </div>
-        </q-tab-panel>
-        <q-tab-panel name="unselected_course">
-          <div>
-            <q-table
-              class="my-sticky-header-table"
-              :rows="rows_unselected"
-              :columns="columns"
-              row-key="id"
-              :filter="filter_1"
-              :loading="loading_1"
-              v-model:selected="unselected"
-              selection="single"
-            >
-            <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter_1" placeholder="查询课程">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </template>
-            <template v-slot:top-right>
-                <q-btn
-                  color="white"
-                  text-color="black"
-                  icon-right="add"
-                  no-caps
-                  @click="addSelectedCourse"
-                />
-              </template>
-            </q-table>
-          </div>
-        </q-tab-panel>
-      </q-tab-panels>
+  <div class="col q-pa-sm bg-white">
+    <q-toolbar class="text-primary">
+      <q-toolbar-title>
+        学生添加
+      </q-toolbar-title>
+    </q-toolbar>
+    <q-form
+
+      @submit="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md "
+    >
+
+    <div class="q-gutter-md row items-start">
+
+      <q-input
+        v-model="newId"
+        label="学号"
+      />
+
+      <q-input
+        v-model="newName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="newGender"
+        label="性别"
+      />
+
+      <q-input
+        v-model="newBirthDate"
+        label="出生日期"
+      />
+
+      <q-input
+        v-model="newGPA"
+        label="绩点"
+      />
+
     </div>
+
+      <div class="q-pa-md">
+        <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
+      </div>
+    </q-form>
+  </div>
+  <div class="col q-pa-sm bg-white">
+    <q-toolbar class="text-primary">
+      <q-toolbar-title>
+        学生修改
+      </q-toolbar-title>
+    </q-toolbar>
+    <q-form
+
+      @submit="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md "
+    >
+
+    <div class="q-gutter-md row items-start">
+
+      <q-input
+        v-model="oldId"
+        label="学号"
+      />
+
+      <q-input
+        v-model="oldName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="oldGender"
+        label="性别"
+      />
+
+      <q-input
+        v-model="oldBirthDate"
+        label="出生日期"
+      />
+
+      <q-input
+        v-model="oldGPA"
+        label="绩点"
+      />
+
+    </div>
+
+      <div class="q-pa-md">
+        <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
+      </div>
+    </q-form>
+  </div>
   </q-page>
 </template>
 
@@ -189,59 +235,46 @@ const columns = [
   {
     name: 'name',
     required: true,
-    label: '课程名称',
+    label: '学号',
     align: 'left',
     field: row => row.name,
     format: val => `${val}`,
     sortable: true
   },
-  { name: 'id', align: 'center', label: '课程号', field: 'id', sortable: true },
-  { name: 'name', align: 'center', label: '课程名称', field: 'name', sortable: true },
-  { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
-  { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
-  { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
-  { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
-  { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
-  { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
+  { name: 'name', align: 'center', label: '姓名', field: 'name', sortable: true },
+  { name: 'gender', align: 'center', label: '性别', field: 'gender', sortable: true },
+  { name: 'birthDate', align: 'center', label: '出生日期', field: 'birthDate', sortable: true },
+  { name: 'GPA', align: 'center', label: '绩点', field: 'GPA', sortable: true }
 ]
 
 var rows_selected = [];
-var rows_unselected = [];
 
 export default({
-  
   data () {
-    const loading = ref(false)
-    const filter = ref('')
-    const loading_1 = ref(false)
-    const filter_1 = ref('')
     const leftDrawerOpen = ref(false)
-    // var stuId = this.$route.params.studentId
-    // rows_selected = [],
-    // rows_unselected = [],
-    var studentId = this.$route.params.studentId
 
     return {
-      filter,
-      loading,
-      filter_1,
-      loading_1,
-      selected: ref([]),
-      unselected: ref([]),
-      columns,
-      rows_selected,
-      rows_unselected,
-      tab: ref('selected_course'),
-      studentId,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
+      newId: '',
+      newName: '',
+      newGender: '',
+      newBirthDate: '',
+      newGPA: '',
+      oldId: '',
+      oldName: '',
+      oldGender: '',
+      oldBirthDate: '',
+      oldGPA: '',
+      columns,
+      rows_selected
     }
   },
 
   created() {
-    this.checkSelectedCourse()
+    this.checkCourseInfo()
   },
 
   methods:{
@@ -249,18 +282,18 @@ export default({
       this.$router.push('/')
     },
     goToHomepage() {
-      this.$router.push('/student/homepage/' + this.$route.params.studentId)
+      this.$router.push('/admin/homepage/')
     },
     goToLesson() {
-      this.$router.push('/student/lesson/' + this.$route.params.studentId)
+      this.$router.push('/admin/lesson/')
     },
     goToSettings() {
-      this.$router.push('/student/settings/' + this.$route.params.studentId)
-    },
+      this.$router.push('/admin/sc/')
+      },
     goToInfo() {
-      this.$router.push('/student/info/' + this.$route.params.studentId)
+      this.$router.push('/admin/student/')
     },
-    deleteSelectedCourse(){
+    deleteSelectedCourse(){
       // console.log(this.studentId);
       var c_id = "";
       var rows_selected = this.rows_selected;
@@ -280,17 +313,15 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/',
+            url: 'http://localhost:8000/admin/student/',
             data: {
-                "userId": this.studentId,
-                "courseId": c_id,
-                "operation": "delete"
+                "id": c_id,
+                "operation": "deleteStudentInfo"
             }
           }).then(function (response) {
               // handle success
               console.log(response);
-              _this.rows_selected = response.data.data.courseTable;
-              _this.rows_unselected = response.data.data.unCourseTable;
+              _this.rows_selected = response.data.data.courseInfo;
             })
             .catch(function (error) {
               // handle error
@@ -301,7 +332,7 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '课程已经删除！',
+        this.$q.notify({message: '学生已经删除！',
 color: "green-4"})
       }
       )
@@ -310,44 +341,29 @@ color: "green-4"})
     addSelectedCourse(){
       this.$q.dialog({
         title: '确认',
-        message: '是否添加该课程',
+        message: '是否添加该学生',
         cancel: true,
         persistent: true
       }).onOk(() => {
-        var c_id = "";
-        this.unselected.filter(function(item){
-          c_id = item.id;
-          // axios({
-          //   method: 'POST',
-          //   url: 'http://localhost:8000/student/lesson/',
-          //   params: {
-          //       "userId": this.studentId,
-          //       "courseId": item.id,
-          //       "operation": "select"
-          //   }
-          // }).then(function (response) {
-          //     // handle success
-          //     this.rows_selected = response.data;
-          //     console.log(response);
-          //   }
-          return item;
-        });
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/",
+          url: "http://localhost:8000/admin/student/",
           data: {
-            "userId": this.studentId,
-            "courseId": c_id,
-            "operation": "select"
-          }
+            "studentId": this.newId,
+            "studentName": this.newName,
+            "studentGender": this.newGender,
+            "studentBirthDate": this.newBirthDate,
+            "studentGPA": this.newGPA,
+            "operation": "addStudentInfo"
+          }
         }).then(function (response) {
               // handle success
               console.log(response);
-// _this.checkSelectedCourse();
-//           _this.checkUnselectedCourse();
-              _this.rows_selected = response.data.data.courseTable;
-              _this.rows_unselected = response.data.data.unCourseTable;
+              _this.rows_selected = response.data.data.courseInfo;
+              this.$q.notify({
+          message: '课程已经添加！',
+          color: 'green-4'})
             })
             .catch(function (error) {
               // handle error
@@ -356,30 +372,58 @@ let _this = this
             .then(function () {
               // always executed
             });
-        this.unselected = [];
-        this.$q.notify({
-          message: '课程已经添加！',
-          color: 'green-4'})
+        
       })
     },
-    checkSelectedCourse(){
-  // var rs = this.rows_selected;
-      // console.log(rows_selected);
-      // console.log("hahaha")
-      // console.log(this.studentId);
+    changeSelectedCourse(){
+      this.$q.dialog({
+        title: '确认',
+        message: '是否修改该学生信息',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+let _this = this
+        axios({
+          method: "POST",
+          url: "http://localhost:8000/admin/student/",
+          data: {
+            "studentId": this.oldId,
+            "studentName": this.oldName,
+            "studentGender": this.oldGender,
+            "studentBirthDate": this.oldBirthDate,
+            "studentGPA": this.oldGPA,
+            "operation": "changeStudentInfo"
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response);
+              _this.rows_selected = response.data.data.courseInfo;
+              this.$q.notify({
+          message: '课程已经添加！',
+          color: 'green-4'})
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
+        
+      })
+    },
+    checkCourseInfo(){
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/admin/student/',
         params: {
-            "userId": this.studentId,
-            "searchText": "",
-            "operation": "selected"
+            "operation": "getStudentInfo"
         }
       }).then(function (response) {
           // console.log(response);
           // handle success
-          _this.rows_selected = response.data.data.courseTable;
+          _this.rows_selected = response.data.data.courseInfo;
 //           console.log(rows_selected);
         })
         .catch(function (error) {
@@ -390,35 +434,8 @@ let _this = this
           // always executed
         });
     console.log("hahaha");
-    // console.log(this.rows_selected);
-    // console.log(rows_selected);
-    // this.rows_selected = rs;
-    // console.log(this.rows_selected);
     },
-    checkUnselectedCourse(){
-  let _this = this
-      axios({
-        method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
-        params: {
-            "userId": this.studentId,
-            "searchText": "",
-            "operation": "unselected"
-        }
-      }).then(function (response) {
-          // handle success
-          _this.rows_unselected = response.data.data.courseTable;
-          console.log(response);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-        });
-    },
-  }
+  }
 })
 </script>
 
@@ -433,7 +450,7 @@ let _this = this
    background-repeat: no-repeat; /* Do not repeat the image */
    background-size: cover; /* Resize the background image to cover the entire container */
   }
-</style>>
+</style>
 
 <style lang="sass">
 .my-sticky-header-table

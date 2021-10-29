@@ -1,5 +1,5 @@
 <template>
-      <q-drawer
+<q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         :width="200"
@@ -25,14 +25,13 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToLesson">
               <q-item-section avatar>
-                <q-icon name="school" />
+                <q-icon name="import_contacts" />
               </q-item-section>
 
               <q-item-section>
-                课程
+                课程信息
               </q-item-section>
             </q-item>
 
@@ -41,24 +40,25 @@
               v-ripple
               @click="goToInfo">
             <q-item-section avatar>
-                <q-icon name="import_contacts" />
+                <q-icon name="school" />
             </q-item-section>
 
               <q-item-section>
-                信息
+                学生信息
               </q-item-section>
             </q-item>
 
             <q-item
               clickable 
               v-ripple
+              active
               @click="goToSettings">
               <q-item-section avatar>
-                <q-icon name="settings" />
+                <q-icon name="check_circle" />
               </q-item-section>
 
               <q-item-section>
-                设置
+                学生选课
               </q-item-section>
             </q-item>
           </q-list>
@@ -100,6 +100,14 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>学生课程列表</b></h5> 
     </div>
+    <div  class="q-pa-sm">
+      <q-input outlined v-model="studentId" label="学号" :dense="dense">
+       <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </div>
+
     <div>
       <q-tabs
         v-model="tab"
@@ -209,19 +217,15 @@ var rows_selected = [];
 var rows_unselected = [];
 
 export default({
-  
   data () {
     const loading = ref(false)
     const filter = ref('')
     const loading_1 = ref(false)
     const filter_1 = ref('')
     const leftDrawerOpen = ref(false)
-    // var stuId = this.$route.params.studentId
-    // rows_selected = [],
-    // rows_unselected = [],
-    var studentId = this.$route.params.studentId
 
     return {
+      studentId: ref([]),
       filter,
       loading,
       filter_1,
@@ -232,11 +236,10 @@ export default({
       rows_selected,
       rows_unselected,
       tab: ref('selected_course'),
-      studentId,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      },
+      }
     }
   },
 
@@ -249,18 +252,18 @@ export default({
       this.$router.push('/')
     },
     goToHomepage() {
-      this.$router.push('/student/homepage/' + this.$route.params.studentId)
+      this.$router.push('/admin/homepage/')
     },
     goToLesson() {
-      this.$router.push('/student/lesson/' + this.$route.params.studentId)
+      this.$router.push('/admin/lesson/')
     },
     goToSettings() {
-      this.$router.push('/student/settings/' + this.$route.params.studentId)
-    },
+      this.$router.push('/admin/sc/')
+      },
     goToInfo() {
-      this.$router.push('/student/info/' + this.$route.params.studentId)
+      this.$router.push('/admin/student/')
     },
-    deleteSelectedCourse(){
+    deleteSelectedCourse(){
       // console.log(this.studentId);
       var c_id = "";
       var rows_selected = this.rows_selected;
@@ -363,6 +366,7 @@ let _this = this
       })
     },
     checkSelectedCourse(){
+  if (this.studentId != "") {
   // var rs = this.rows_selected;
       // console.log(rows_selected);
       // console.log("hahaha")
@@ -373,7 +377,6 @@ let _this = this
         url: 'http://localhost:8000/student/lesson/',
         params: {
             "userId": this.studentId,
-            "searchText": "",
             "operation": "selected"
         }
       }).then(function (response) {
@@ -394,15 +397,16 @@ let _this = this
     // console.log(rows_selected);
     // this.rows_selected = rs;
     // console.log(this.rows_selected);
+  }
     },
     checkUnselectedCourse(){
+  if (this.studentId != "") {
   let _this = this
       axios({
         method: 'GET',
         url: 'http://localhost:8000/student/lesson/',
         params: {
             "userId": this.studentId,
-            "searchText": "",
             "operation": "unselected"
         }
       }).then(function (response) {
@@ -417,7 +421,8 @@ let _this = this
         .then(function () {
           // always executed
         });
-    },
+     }
+    },
   }
 })
 </script>
@@ -433,27 +438,4 @@ let _this = this
    background-repeat: no-repeat; /* Do not repeat the image */
    background-size: cover; /* Resize the background image to cover the entire container */
   }
-</style>>
-
-<style lang="sass">
-.my-sticky-header-table
-  /* height or max-height is important */
-  max-height: 700px
-
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #D6EAF8
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
 </style>

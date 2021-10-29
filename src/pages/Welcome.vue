@@ -54,7 +54,7 @@ export default {
       identity : '',
 
       options: [
-        '学生', '教师'//, '管理员'
+        '学生', '教师', '管理员'
       ]
     }
   },
