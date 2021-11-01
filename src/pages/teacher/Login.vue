@@ -105,7 +105,7 @@ export default {
       }).then(function (response) {
         console.log(response);
           if (!response.data.status) {
-            _this.$router.push('/teacher/lesson/' + _this.teacherId);
+            _this.$router.push('/teacher/homepage/' + _this.teacherId);
             console.log(response);
           }
           else {
