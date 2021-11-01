@@ -36,10 +36,10 @@ const routes = [
     path: '/',
     component: () => import('layouts/TeaLayout.vue'),
     children: [
-      { path: 'teacher/homepage', component: () => import('src/pages/teacher/Tea_Homepage.vue') },
+      { path: 'teacher/homepage/:teacherId', component: () => import('src/pages/teacher/Tea_Homepage.vue') },
       { path: 'teacher/lesson/:teacherId', component: () => import('src/pages/teacher/Tea_Lesson.vue') },
-      { path: 'teacher/exam', component: () => import('src/pages/teacher/Tea_Exam.vue') },
-      { path: 'teacher/settings', component: () => import('src/pages/teacher/Tea_Settings.vue') }
+      { path: 'teacher/exam/:teacherId', component: () => import('src/pages/teacher/Tea_Exam.vue') },
+      { path: 'teacher/settings/:teacherId', component: () => import('src/pages/teacher/Tea_Settings.vue') }
     ]
   },
 

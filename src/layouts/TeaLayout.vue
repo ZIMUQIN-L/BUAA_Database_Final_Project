@@ -1,51 +1,5 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title>
-          教务系统
-        </q-toolbar-title>
-
-
-        <div>
-          <q-btn
-          flat
-          align="around"
-          label = "设置"
-          icon="lightbulb_outline"
-          @click="setting"
-        />
-        </div>
-
-      
-
-        <div>
-          <q-btn
-          label = "退出"
-          flat
-          align="around"
-          icon="logout"
-          @click="logout"
-        />
-        </div>
-      </q-toolbar>
-      <q-img 
-        src="../statics/blue-trianglify.jpg"
-        class="header-image absolute-top"
-      />
-    </q-header>
-
-      
-
     <q-page-container>
       <keep-alive>
         <router-view />
