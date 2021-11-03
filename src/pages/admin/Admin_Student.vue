@@ -169,6 +169,31 @@
         label="绩点"
       />
 
+      <q-input
+        v-model="newNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="newClassNumber"
+        label="班号"
+      />
+
+      <q-input
+        v-model="newMajorNumber"
+        label="系号"
+      />
+
+      <q-input
+        v-model="newPassword"
+        label="登录密码"
+      />
+
+      <q-input
+        v-model="newTel"
+        label="联系电话"
+      />
+
     </div>
 
       <div class="q-pa-md">
@@ -216,6 +241,31 @@
         label="绩点"
       />
 
+      <q-input
+        v-model="oldNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="oldClassNumber"
+        label="班号"
+      />
+
+      <q-input
+        v-model="oldMajorNumber"
+        label="系号"
+      />
+
+      <q-input
+        v-model="oldPassword"
+        label="登录密码"
+      />
+
+      <q-input
+        v-model="oldTel"
+        label="联系电话"
+      />
+
     </div>
 
       <div class="q-pa-md">
@@ -232,19 +282,16 @@ import axios from 'axios'
 import VueAxios from 'vue-axios';
 
 const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: '学号',
-    align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
-  },
-  { name: 'name', align: 'center', label: '姓名', field: 'name', sortable: true },
-  { name: 'gender', align: 'center', label: '性别', field: 'gender', sortable: true },
-  { name: 'birthDate', align: 'center', label: '出生日期', field: 'birthDate', sortable: true },
-  { name: 'GPA', align: 'center', label: '绩点', field: 'GPA', sortable: true }
+  { name: 'studentId', align: 'center', label: '序号', field: 'studentId', sortable: true },
+  { name: 'studentName', align: 'center', label: '姓名', field: 'studentName', sortable: true },
+  { name: 'studentGender', align: 'center', label: '性别', field: 'studentGender', sortable: true },
+  { name: 'studentBirthDate', align: 'center', label: '出生日期', field: 'studentBirthDate', sortable: true },
+  { name: 'studentGPA', align: 'center', label: '绩点', field: 'studentGPA', sortable: true },
+  { name: 'studentIdNumber', align: 'center', label: '身份证号', field: 'studentIdNumber', sortable: true },
+  { name: 'studentClassNumber', align: 'center', label: '班号', field: 'studentClassNumber', sortable: true },
+  { name: 'studentMajorNumber', align: 'center', label: '系号', field: 'studentMajorNumber', sortable: true },
+  { name: 'studentPassword', align: 'center', label: '登录密码', field: 'studentPassword', sortable: true },
+  { name: 'studentTel', align: 'center', label: '联系电话', field: 'studentTel', sortable: true }
 ]
 
 var rows_selected = [];
@@ -263,11 +310,21 @@ export default({
       newGender: '',
       newBirthDate: '',
       newGPA: '',
+      newNumber: '',
+      newClassNumber: '',
+      newMajorNumber: '',
+      newPassword: '',
+      newTel: '',
       oldId: '',
       oldName: '',
       oldGender: '',
       oldBirthDate: '',
       oldGPA: '',
+      oldNumber: '',
+      oldClassNumber: '',
+      oldMajorNumber: '',
+      oldPassword: '',
+      oldTel: '',
       columns,
       rows_selected
     }
@@ -355,6 +412,11 @@ let _this = this
             "studentGender": this.newGender,
             "studentBirthDate": this.newBirthDate,
             "studentGPA": this.newGPA,
+            "studentIdNumber": this.newNumber,
+            "studentClassNumber": this.newClassNumber,
+            "studentMajorNumber": this.newMajorNumber,
+            "studentPassword": this.newPassword,
+            "studentTel": this.newTel,
             "operation": "addStudentInfo"
           }
         }).then(function (response) {
@@ -392,6 +454,11 @@ let _this = this
             "studentGender": this.oldGender,
             "studentBirthDate": this.oldBirthDate,
             "studentGPA": this.oldGPA,
+            "studentIdNumber": this.oldNumber,
+            "studentClassNumber": this.oldClassNumber,
+            "studentMajorNumber": this.oldMajorNumber,
+            "studentPassword": this.oldPassword,
+            "studentTel": this.oldTel,
             "operation": "changeStudentInfo"
           }
         }).then(function (response) {
