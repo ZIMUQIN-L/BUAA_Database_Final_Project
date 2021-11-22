@@ -39,7 +39,9 @@ const routes = [
       { path: 'teacher/homepage/:teacherId', component: () => import('src/pages/teacher/Tea_Homepage.vue') },
       { path: 'teacher/lesson/:teacherId', component: () => import('src/pages/teacher/Tea_Lesson.vue') },
       { path: 'teacher/exam/:teacherId', component: () => import('src/pages/teacher/Tea_Exam.vue') },
-      { path: 'teacher/settings/:teacherId', component: () => import('src/pages/teacher/Tea_Settings.vue') }
+      { path: 'teacher/settings/:teacherId', component: () => import('src/pages/teacher/Tea_Settings.vue') },
+      { path: 'teacher/info/:teacherId', component: () => import('src/pages/teacher/Tea_Info.vue') },
+      { path: 'teacher/depart/:teacherId', component: () => import('src/pages/teacher/Tea_Depart.vue') },
     ]
   },
 

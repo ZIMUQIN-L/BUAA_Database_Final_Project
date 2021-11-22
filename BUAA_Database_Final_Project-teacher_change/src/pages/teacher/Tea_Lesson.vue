@@ -45,7 +45,20 @@
             </q-item-section>
 
               <q-item-section>
-                考试
+                信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToDepart">
+            <q-item-section avatar>
+                <q-icon name="attachment" />
+            </q-item-section>
+
+              <q-item-section>
+                院系
               </q-item-section>
             </q-item>
 
@@ -358,7 +371,10 @@ export default {
       this.$router.push('/teacher/settings/' + this.$route.params.teacherId)
     },
     goToInfo() {
-      this.$router.push('/teacher/exam/' + this.$route.params.teacherId)
+      this.$router.push('/teacher/info/' + this.$route.params.teacherId)
+    },
+    goToDepart() {
+      this.$router.push('/teacher/depart/' + this.$route.params.teacherId)
     },
     deleteSelectedCourse() {
       console.log(this.teacherCourse);
