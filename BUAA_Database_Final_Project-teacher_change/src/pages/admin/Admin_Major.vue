@@ -24,6 +24,7 @@
 
             <q-item
               clickable 
+              active
               v-ripple
               @click="goToMajor">
             <q-item-section avatar>
@@ -90,7 +91,6 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToSettings">
               <q-item-section avatar>
                 <q-icon name="check_circle" />
@@ -137,31 +137,9 @@
     </q-header>
   <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
-      <h5 align = "center"><b>学生课程列表</b></h5> 
+      <h5 align = "center"><b>专业信息表</b></h5> 
     </div>
-    <div  class="q-pa-sm">
-      <q-input outlined v-model="studentId" label="学号" :dense="dense">
-       <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </div>
-
-    <div>
-      <q-tabs
-        v-model="tab"
-        dense
-        class="bg-white text-blue shadow-2"
-        inline-label
-        align="left"
-      >
-        <q-tab name="selected_course" icon="check_box" label="已选课程" @click="checkSelectedCourse"></q-tab>
-        <q-tab name="unselected_course" icon="add_box" label="未选课程" @click="checkUnselectedCourse"></q-tab>
-      </q-tabs>
-      <q-separator />
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="selected_course">
-          <div>
+    <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
               :rows="rows_selected"
@@ -173,7 +151,7 @@
               selection="single"
             >
             <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询课程">
+              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询专业">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
@@ -190,40 +168,109 @@
               </template>
             </q-table>
           </div>
-        </q-tab-panel>
-        <q-tab-panel name="unselected_course">
-          <div>
-            <q-table
-              class="my-sticky-header-table"
-              :rows="rows_unselected"
-              :columns="columns"
-              row-key="id"
-              :filter="filter_1"
-              :loading="loading_1"
-              v-model:selected="unselected"
-              selection="single"
-            >
-            <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter_1" placeholder="查询课程">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </template>
-            <template v-slot:top-right>
-                <q-btn
-                  color="white"
-                  text-color="black"
-                  icon-right="add"
-                  no-caps
-                  @click="addSelectedCourse"
-                />
-              </template>
-            </q-table>
-          </div>
-        </q-tab-panel>
-      </q-tab-panels>
+  <div class="col q-pa-sm bg-white">
+    <q-toolbar class="text-primary">
+      <q-toolbar-title>
+        专业添加
+      </q-toolbar-title>
+    </q-toolbar>
+    <q-form
+
+      @submit="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md "
+    >
+
+    <div class="q-gutter-md row items-start">
+
+      <q-input
+        v-model="newId"
+        label="院系号"
+      />
+
+      <q-input
+        v-model="newName"
+        label="院系名称"
+      />
+
+      <q-input
+        v-model="newNum"
+        label="院系人数"
+      />
+
+      <q-input
+        v-model="newChief"
+        label="系主任工号"
+      />
+
+      <q-input
+        v-model="newEmail"
+        label="院系邮箱"
+      />
+
+      <q-input
+        v-model="newCredit"
+        label="学分要求"
+      />
+
     </div>
+
+      <div class="q-pa-md">
+        <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
+      </div>
+    </q-form>
+  </div>
+  <div class="col q-pa-sm bg-white">
+    <q-toolbar class="text-primary">
+      <q-toolbar-title>
+        专业修改
+      </q-toolbar-title>
+    </q-toolbar>
+    <q-form
+
+      @submit="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md "
+    >
+
+    <div class="q-gutter-md row items-start">
+
+      <q-input
+        v-model="oldId"
+        label="院系号"
+      />
+
+      <q-input
+        v-model="oldName"
+        label="院系名称"
+      />
+
+      <q-input
+        v-model="oldNum"
+        label="院系人数"
+      />
+
+      <q-input
+        v-model="oldChief"
+        label="系主任工号"
+      />
+
+      <q-input
+        v-model="oldEmail"
+        label="院系邮箱"
+      />
+
+      <q-input
+        v-model="oldCredit"
+        label="学分要求"
+      />
+    </div>
+
+      <div class="q-pa-md">
+        <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
+      </div>
+    </q-form>
+  </div>
   </q-page>
 </template>
 
@@ -233,57 +280,43 @@ import axios from 'axios'
 import VueAxios from 'vue-axios';
 
 const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: '课程名称',
-    align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
-  },
-  { name: 'id', align: 'center', label: '课程号', field: 'id', sortable: true },
-  { name: 'name', align: 'center', label: '课程名称', field: 'name', sortable: true },
-  { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
-  { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
-  { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
-  { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
-  { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
-  { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
+  { name: 'id', align: 'center', label: '班号', field: 'id', sortable: true },
+  { name: 'name', align: 'center', label: '专业名称', field: 'name', sortable: true },
+  { name: 'num', align: 'center', label: '专业人数', field: 'num', sortable: true },
+  { name: 'chief', align: 'center', label: '系主任工号', field: 'chief', sortable: true },
+  { name: 'email', align: 'center', label: '院系邮箱', field: 'email', sortable: true },
+  { name: 'credit', align: 'center', label: '学分要求', field: 'credit', sortable: true }
 ]
 
 var rows_selected = [];
-var rows_unselected = [];
 
 export default({
   data () {
-    const loading = ref(false)
-    const filter = ref('')
-    const loading_1 = ref(false)
-    const filter_1 = ref('')
     const leftDrawerOpen = ref(false)
 
     return {
-      studentId: ref([]),
-      filter,
-      loading,
-      filter_1,
-      loading_1,
-      selected: ref([]),
-      unselected: ref([]),
-      columns,
-      rows_selected,
-      rows_unselected,
-      tab: ref('selected_course'),
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      newId: '',
+      newName: '',
+      newNum: '',
+      newChief: '',
+      newEmail: '',
+      newCredit: '',
+      oldId: '',
+      oldName: '',
+      oldNum: '',
+      oldChief: '',
+      oldEmail: '',
+      oldCredit: '',
+      columns,
+      rows_selected
     }
   },
 
   created() {
-    this.checkSelectedCourse()
   },
 
   methods:{
@@ -318,7 +351,7 @@ export default({
       console.log(rows_selected);
       this.$q.dialog({
         title: '确认',
-        message: '是否删除该课程',
+        message: '是否删除该专业',
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -331,17 +364,15 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/',
+            url: 'http://localhost:8000/admin/major/delInfo',
             data: {
-                "userId": this.studentId,
-                "courseId": c_id,
-                "operation": "delete"
+                "id": c_id,
+                "operation": "deleteMajorInfo"
             }
           }).then(function (response) {
               // handle success
               console.log(response);
-              _this.rows_selected = response.data.data.courseTable;
-              _this.rows_unselected = response.data.data.unCourseTable;
+              _this.rows_selected = response.data.data.majorInfo;
             })
             .catch(function (error) {
               // handle error
@@ -352,7 +383,7 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '课程已经删除！',
+        this.$q.notify({message: '专业已经删除！',
 color: "green-4"})
       }
       )
@@ -361,44 +392,29 @@ color: "green-4"})
     addSelectedCourse(){
       this.$q.dialog({
         title: '确认',
-        message: '是否添加该课程',
+        message: '是否添加该专业',
         cancel: true,
         persistent: true
       }).onOk(() => {
-        var c_id = "";
-        this.unselected.filter(function(item){
-          c_id = item.id;
-          // axios({
-          //   method: 'POST',
-          //   url: 'http://localhost:8000/student/lesson/',
-          //   params: {
-          //       "userId": this.studentId,
-          //       "courseId": item.id,
-          //       "operation": "select"
-          //   }
-          // }).then(function (response) {
-          //     // handle success
-          //     this.rows_selected = response.data;
-          //     console.log(response);
-          //   }
-          return item;
-        });
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/",
+          url: "http://localhost:8000/admin/major/addInfo",
           data: {
-            "userId": this.studentId,
-            "courseId": c_id,
-            "operation": "select"
-          }
+            "id": this.newId,
+            "name": this.newName,
+            "chief": this.newChief,
+            "email": this.newEmail,
+            "credit": this.newCredit,
+            "operation": "addMajorInfo"
+          }
         }).then(function (response) {
               // handle success
               console.log(response);
-// _this.checkSelectedCourse();
-//           _this.checkUnselectedCourse();
-              _this.rows_selected = response.data.data.courseTable;
-              _this.rows_unselected = response.data.data.unCourseTable;
+              _this.rows_selected = response.data.data.majorInfo;
+              this.$q.notify({
+          message: '专业已经添加！',
+          color: 'green-4'})
             })
             .catch(function (error) {
               // handle error
@@ -407,30 +423,58 @@ let _this = this
             .then(function () {
               // always executed
             });
-        this.unselected = [];
-        this.$q.notify({
-          message: '课程已经添加！',
-          color: 'green-4'})
+        
       })
     },
-    checkSelectedCourse(){
-  if (this.studentId != "") {
-  // var rs = this.rows_selected;
-      // console.log(rows_selected);
-      // console.log("hahaha")
-      // console.log(this.studentId);
+    changeSelectedCourse(){
+      this.$q.dialog({
+        title: '确认',
+        message: '是否修改该专业信息',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+let _this = this
+        axios({
+          method: "POST",
+          url: "http://localhost:8000/admin/major/changeInfo/",
+          data: {
+            "id": this.oldId,
+            "name": this.oldName,
+            "chief": this.oldChief,
+            "email": this.oldEmail,
+            "credit": this.oldCredit,
+            "operation": "changeMajorInfo"
+          }
+        }).then(function (response) {
+              // handle success
+              console.log(response);
+              _this.rows_selected = response.data.data.majorInfo;
+              this.$q.notify({
+          message: '专业已经添加！',
+          color: 'green-4'})
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
+        
+      })
+    },
+    checkCourseInfo(){
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/admin/major/getInfo/',
         params: {
-            "userId": this.studentId,
-            "operation": "selected"
+            "operation": "getMajorInfo"
         }
       }).then(function (response) {
           // console.log(response);
           // handle success
-          _this.rows_selected = response.data.data.courseTable;
+          _this.rows_selected = response.data.data.majorInfo;
 //           console.log(rows_selected);
         })
         .catch(function (error) {
@@ -441,37 +485,8 @@ let _this = this
           // always executed
         });
     console.log("hahaha");
-    // console.log(this.rows_selected);
-    // console.log(rows_selected);
-    // this.rows_selected = rs;
-    // console.log(this.rows_selected);
-  }
     },
-    checkUnselectedCourse(){
-  if (this.studentId != "") {
-  let _this = this
-      axios({
-        method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
-        params: {
-            "userId": this.studentId,
-            "operation": "unselected"
-        }
-      }).then(function (response) {
-          // handle success
-          _this.rows_unselected = response.data.data.courseTable;
-          console.log(response);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-        });
-     }
-    },
-  }
+  }
 })
 </script>
 

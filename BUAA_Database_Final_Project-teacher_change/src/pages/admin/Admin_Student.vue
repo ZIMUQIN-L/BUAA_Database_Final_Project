@@ -25,6 +25,45 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToMajor">
+            <q-item-section avatar>
+                <q-icon name="square_foot" />
+            </q-item-section>
+
+              <q-item-section>
+                专业信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToClass">
+            <q-item-section avatar>
+                <q-icon name="groups" />
+            </q-item-section>
+
+              <q-item-section>
+                班级信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToTeacher">
+            <q-item-section avatar>
+                <q-icon name="psychology" />
+            </q-item-section>
+
+              <q-item-section>
+                教师信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToLesson">
               <q-item-section avatar>
                 <q-icon name="import_contacts" />
@@ -112,7 +151,7 @@
               selection="single"
             >
             <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询课程">
+              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询学生">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
@@ -341,6 +380,15 @@ export default({
     goToHomepage() {
       this.$router.push('/admin/homepage/')
     },
+    goToClass() {
+      this.$router.push('/admin/class/')
+    },
+    goToMajor() {
+      this.$router.push('/admin/major/')
+    },
+    goToTeacher() {
+      this.$router.push('/admin/teacher/')
+    },
     goToLesson() {
       this.$router.push('/admin/lesson/')
     },
@@ -357,7 +405,7 @@ export default({
       console.log(rows_selected);
       this.$q.dialog({
         title: '确认',
-        message: '是否删除该课程',
+        message: '是否删除该学生',
         cancel: true,
         persistent: true
       }).onOk(() => {

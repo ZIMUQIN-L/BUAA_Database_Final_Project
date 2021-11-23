@@ -26,6 +26,45 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToMajor">
+            <q-item-section avatar>
+                <q-icon name="square_foot" />
+            </q-item-section>
+
+              <q-item-section>
+                专业信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToClass">
+            <q-item-section avatar>
+                <q-icon name="groups" />
+            </q-item-section>
+
+              <q-item-section>
+                班级信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToTeacher">
+            <q-item-section avatar>
+                <q-icon name="psychology" />
+            </q-item-section>
+
+              <q-item-section>
+                教师信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToLesson">
               <q-item-section avatar>
                 <q-icon name="import_contacts" />
@@ -132,6 +171,15 @@ export default({
     },
     goToHomepage() {
       this.$router.push('/admin/homepage/')
+    },
+    goToClass() {
+      this.$router.push('/admin/class/')
+    },
+    goToMajor() {
+      this.$router.push('/admin/major/')
+    },
+    goToTeacher() {
+      this.$router.push('/admin/teacher/')
     },
     goToLesson() {
       this.$router.push('/admin/lesson/')

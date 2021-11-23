@@ -1,5 +1,5 @@
 <template>
-    <q-drawer
+<q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         :width="200"
@@ -38,6 +38,7 @@
             <q-item
               clickable 
               v-ripple
+              active
               @click="goToClass">
               <q-item-section avatar>
                 <q-icon name="class" />
@@ -51,7 +52,6 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToInfo">
             <q-item-section avatar>
                 <q-icon name="import_contacts" />
@@ -109,70 +109,30 @@
         class="header-image absolute-top"
       />
     </q-header>
-
-      
   <q-page class="q-pa-sm">
-    <div class="q-pa-md flex flex-center">
-    <q-card v-bind:style="$q.screen.lt.sm?{'width': '80%'}:{'width':'60%'}">
-    <q-card-section>
     <div class="q-pa-sm bg-grey-3">
-      <h5 align = "center"><b>学生信息</b></h5> 
+      <h5 align = "center"><b>班级信息表</b></h5> 
     </div>
-    <div class="q-pa-md flex flex-center">
-      <div class="q-gutter-y-md column" style="max-width: 600px" v-bind:style="$q.screen.lt.sm?{'width': '90%'}:{'width':'90%'}">
-        <q-input v-model="studentId" :readonly="true" label="学号">
-          <template v-slot:prepend>
-            <q-icon name="person"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentName" :readonly="true" label="姓名">
-          <template v-slot:prepend>
-            <q-icon name="badge"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentGender" :readonly="!readonly" label="性别">
-          <template v-slot:prepend>
-            <q-icon name="face"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentBirthDate" :readonly="true" label="出生日期">
-          <template v-slot:prepend>
-            <q-icon name="event"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentGPA" :readonly="true" label="绩点">
-          <template v-slot:prepend>
-            <q-icon name="grading"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentTel" :readonly="!readonly" label="电话号码">
-          <template v-slot:prepend>
-            <q-icon name="phone"></q-icon>
-          </template>
-        </q-input>
-
-        <q-input v-model="studentEmail" :readonly="!readonly" label="电子邮箱">
-          <template v-slot:prepend>
-            <q-icon name="email"></q-icon>
-          </template>
-        </q-input>
-
-        <div>
-          <q-toggle v-model="readonly" label="编辑"></q-toggle>
-        </div>
-
-        <q-btn color="primary" label="提交修改" @click="changeStudentInfo" />
-        
-      </div>
-    </div>
-    </q-card-section>
-    </q-card>
-    </div>
+    <div class="col q-pa-sm bg-white">
+            <q-table
+              class="my-sticky-header-table"
+              :rows="rows_selected"
+              :columns="columns"
+              row-key="id"
+              :filter="filter"
+              :loading="loading"
+              v-model:selected="selected"
+              selection="single"
+            >
+            <template v-slot:top-left>
+              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询学生">
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
+            </template>
+            </q-table>
+          </div>
   </q-page>
 </template>
 
@@ -181,30 +141,32 @@ import { ref } from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios';
 
+const columns = [
+  { name: 'studentId', align: 'center', label: '序号', field: 'studentId', sortable: true },
+  { name: 'studentName', align: 'center', label: '姓名', field: 'studentName', sortable: true },
+  { name: 'studentGender', align: 'center', label: '性别', field: 'studentGender', sortable: true },
+  { name: 'studentTel', align: 'center', label: '联系电话', field: 'studentTel', sortable: true }
+]
+
+var rows_selected = [];
+
 export default({
   data () {
     var stuId = this.$route.params.studentId
     const leftDrawerOpen = ref(false)
 
     return {
-      // studentId,
-      studentId: ref(stuId),
-      studentGender: ref(''),
-      readonly: ref(false),
-      studentName: ref(''),
-      studentBirthDate: ref(''),
-      studentGPA: ref(''),
-      studentTel: ref(''),
-      studentEmail: ref(''),
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      columns,
+      rows_selected
     }
   },
 
   created() {
-    this.getStudentInfo()
+    //this.checkCourseInfo()
   },
 
   methods:{
@@ -226,25 +188,20 @@ export default({
     goToInfo() {
       this.$router.push('/student/info/' + this.$route.params.studentId)
     },
-    getStudentInfo() {
-      let _this = this
+    checkCourseInfo(){
+let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/info/',
+        url: 'http://localhost:8000/student/class/',
         params: {
-            "studentId": _this.$route.params.studentId,
-            "operation": "checkStudentInfo"
+            "studentId": this.studentId,
+            "operation": "getClassInfo"
         }
       }).then(function (response) {
+          // console.log(response);
           // handle success
-          _this.studentId = response.data.data.info.studentId;
-          _this.studentGender = response.data.data.info.studentGender;
-          _this.studentName = response.data.data.info.studentName;
-          _this.studentBirthDate = response.data.data.info.studentBirthDate;
-          _this.studentGPA = response.data.data.info.studentGPA;
-          _this.studentTel = response.data.data.info.studentTel;
-          _this.studentEmail = response.data.data.info.studentEmail;
-          console.log(response);
+          _this.rows_selected = response.data.data.classInfo;
+//           console.log(rows_selected);
         })
         .catch(function (error) {
           // handle error
@@ -253,35 +210,8 @@ export default({
         .then(function () {
           // always executed
         });
-    },
-    changeStudentInfo() {
-      let _this = this
-      axios({
-        method: 'POST',
-        url: 'http://localhost:8000/student/info/',
-        params: {
-            "operation": "changeStudentInfo",
-            "studentId": _this.$route.params.studentId,
-            "studentName": this.studentName,
-            "studentGender": this.studentGender,
-            "studentBirthDate": this.studentBirthDate,
-            "studentGPA": this.studentGPA,
-            "studentTel": this.studentTel,
-            "studentEmail": this.studentEmail
-        }
-      }).then(function (response) {
-          // handle success
-          console.log(response);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-          _this.readonly = false
-        });
-    }
+    console.log("hahaha");
+    },
   }
 })
 </script>
@@ -297,4 +227,27 @@ export default({
    background-repeat: no-repeat; /* Do not repeat the image */
    background-size: cover; /* Resize the background image to cover the entire container */
   }
+</style>
+
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  max-height: 700px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #D6EAF8
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
 </style>

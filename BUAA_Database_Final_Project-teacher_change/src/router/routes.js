@@ -28,6 +28,7 @@ const routes = [
       { path: 'student/lesson/:studentId', component: () => import('src/pages/student/Stu_Lesson.vue') },
       { path: 'student/exam/:studentId', component: () => import('src/pages/student/Stu_Exam.vue') },
       { path: 'student/settings/:studentId', component: () => import('src/pages/student/Stu_Settings.vue') },
+      { path: 'student/class/:studentId', component: () => import('src/pages/student/Stu_Class.vue') },
       { path: 'student/info/:studentId', component: () => import('src/pages/student/Stu_Info.vue') },
     ]
   },
@@ -50,7 +51,10 @@ const routes = [
       { path: 'admin/homepage', component: () => import('src/pages/admin/Admin_Homepage.vue') },
       { path: 'admin/lesson', component: () => import('src/pages/admin/Admin_Lesson.vue') },
       { path: 'admin/student', component: () => import('src/pages/admin/Admin_Student.vue') },
-      { path: 'admin/sc', component: () => import('src/pages/admin/Admin_Sc.vue') }
+      { path: 'admin/sc', component: () => import('src/pages/admin/Admin_Sc.vue') },
+      { path: 'admin/class', component: () => import('src/pages/admin/Admin_Class.vue') },
+      { path: 'admin/major', component: () => import('src/pages/admin/Admin_Major.vue') },
+      { path: 'admin/teacher', component: () => import('src/pages/admin/Admin_Teacher.vue') }
     ]
   },
 

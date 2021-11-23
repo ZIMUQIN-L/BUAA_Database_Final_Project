@@ -39,6 +39,19 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToClass">
+              <q-item-section avatar>
+                <q-icon name="class" />
+              </q-item-section>
+
+              <q-item-section>
+                班级
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToInfo">
             <q-item-section avatar>
                 <q-icon name="import_contacts" />
@@ -253,6 +266,9 @@ export default({
     },
     goToLesson() {
       this.$router.push('/student/lesson/' + this.$route.params.studentId)
+    },
+    goToClass() {
+      this.$router.push('/student/class/' + this.$route.params.studentId)
     },
     goToSettings() {
       this.$router.push('/student/settings/' + this.$route.params.studentId)
