@@ -43,6 +43,7 @@ const routes = [
       { path: 'teacher/info/:teacherId', component: () => import('src/pages/teacher/Tea_Info.vue') },
       { path: 'teacher/depart/:teacherId', component: () => import('src/pages/teacher/Tea_Depart.vue') },
       { path: 'teacher/courseinfo/:teacherId', component: () => import('src/pages/teacher/Tea_CourseInfo.vue') },
+      { path: 'teacher/classroom/:teacherId', component: () => import('src/pages/teacher/Tea_ClassRoom.vue') },
     ]
   },
 

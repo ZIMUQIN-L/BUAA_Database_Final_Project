@@ -76,6 +76,19 @@
 
             <q-item
               clickable 
+              v-ripple
+              @click="goToClassRoom">
+            <q-item-section avatar>
+                <q-icon name="house" />
+            </q-item-section>
+
+              <q-item-section>
+                教室信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
               active
               v-ripple
               @click="goToSettings">
@@ -270,6 +283,9 @@ export default {
     },
     goToCourseInfo() {
       this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
+    },
+    goToClassRoom() {
+      this.$router.push('/teacher/classroom/' + this.$route.params.teacherId)
     },
     onClick:function() {
       let _this = this

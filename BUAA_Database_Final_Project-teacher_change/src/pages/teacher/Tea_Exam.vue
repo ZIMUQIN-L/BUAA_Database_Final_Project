@@ -77,6 +77,19 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToClassRoom">
+            <q-item-section avatar>
+                <q-icon name="house" />
+            </q-item-section>
+
+              <q-item-section>
+                教室信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToSettings">
               <q-item-section avatar>
                 <q-icon name="settings" />
@@ -251,6 +264,9 @@ export default {
     },
     goToCourseInfo() {
       this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
+    },
+    goToClassRoom() {
+      this.$router.push('/teacher/classroom/' + this.$route.params.teacherId)
     },
     deleteTask(index) {
       this.$q.dialog({

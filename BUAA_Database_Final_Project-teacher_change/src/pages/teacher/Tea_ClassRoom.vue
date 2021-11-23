@@ -65,7 +65,6 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToCourseInfo">
             <q-item-section avatar>
                 <q-icon name="laptop_chromebook" />
@@ -79,7 +78,8 @@
             <q-item
               clickable 
               v-ripple
-              @click="goToClassRoom">
+              active
+              @click="goToCourseInfo">
             <q-item-section avatar>
                 <q-icon name="house" />
             </q-item-section>
@@ -141,53 +141,92 @@
   <div> 
   <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
-    <h5 align = "center"><b>学生选课与成绩</b></h5> 
-    <h4>
-    <q-select color="teal" v-model="whichClass" :options="options" label="课程名称">
+    <h5 align = "center"><b>教室信息</b></h5> 
+
+    <q-dialog v-model="inception">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">空教室查询</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-select color="teal" v-model="spareWeek" :options="weeks" label="星期" style="width: 420px">
         <template v-slot:prepend>
           <q-icon name="event" />
         </template>
       </q-select>
+      <q-select color="teal" v-model="spareTime" :options="times" label="时间" style="width: 420px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="查询" @click="searchSpareRoom" />
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="searchSpare" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-teal text-white" style="width: 800px">
+        <q-card-section>
+          <div class="text-h6">空教室信息</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          {{spareWeek}}  {{spareTime}}
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-table
+          :rows="spareClassRooms"
+          :columns="sparecolumns"
+          row-key="studentId"
+          >
+          </q-table>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="退出" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <h4>
+      <div class="q-gutter-md row">
+    <q-select color="teal" v-model="whichClass" :options="classroomId" label="教室编号" style="width: 420px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+    <q-select color="teal" v-model="whichWeek" :options="weeks" label="星期" style="width: 420px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+       <q-btn label="空教室查询" color="blue-4" @click="inception = true" icon-right="send" stackstyle="width: 200px"/>
+      </div>
+    
+    
     </h4>
      <div class="q-pa-md q-gutter-sm">
        <q-table
-      :rows="selectStudent"
+      :rows="allClassRooms"
       :columns="columns"
-      title="选课学生名单"
+      title="教室占用信息"
       row-key="studentId"
       >
       <template v-slot:top-right>
       <q-btn
-        label = "查询选课学生"
+        label = "查询教室信息"
         color="white"
         text-color="black"
         icon-right="search"
         no-caps
         flat
-        @click="getSelectedStudent"
+        @click="getClassroomInfo"
       />
-      </template>
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="studentId" :props="props">
-            {{ props.row.studentId }}
-          </q-td>
-          <q-td key="studentName" :props="props">
-            {{ props.row.studentName }}
-          </q-td>
-          <q-td key="studentGrade" :props="props">
-            <div class="text-pre-wrap">{{ props.row.studentGrade }}</div>
-            <q-popup-edit v-model.number="props.row.studentGrade"  @show="retGrade(props.row.studentId, props.row.studentGrade)"
-               @hide = "setGrade(props.row.studentId, props.row.studentGrade)">
-              <q-input type="number" v-model.number="props.row.studentGrade" dense autofocus>
-              <template v-slot:after>
-                <q-btn flat dense color="positive" icon="check_circle" @click="setGrade(props.row.studentId, props.row.studentGrade)" />
-                <q-btn flat dense color="negative" icon="cancel" @click = "clear"/>
-            </template>
-              </q-input>
-            </q-popup-edit>
-          </q-td>
-        </q-tr>
       </template>
     </q-table>
   </div>
@@ -209,42 +248,82 @@ export default{
 
     return {
       // teacherId,
+      inception: false,
       teacherId: ref(teaId),
       readonly: ref(false),
+      classroomId: null,
+      weeks: [
+        "周一", "周二", "周三", "周四", "周五", "周六", "周日" 
+      ],
       teacherName: ref(''),
       leftDrawerOpen,
       whichClass:ref(''),
+      whichWeek:ref(''),
+      spareWeek: ref(''),
+      spareTime: ref(''),
+      searchSpare: false,
       inputId: null,
       originGrade: null,
       options: [
        
       ],
-      courseIds: [
-
-      ],
-      selectStudent: [
+      spareClassRooms: [
         {
-            studentId: '123', 
-            studentName: 'adad', 
-            studentGrade: '99'
+          classRoomId: "333",
+          classRoomType: "实验室",
+          classRoomPos: "三号楼797",
+          classRoomSize: "33"
+        }
+      ],
+      times: [
+        '第1、2节', '第3、4、5节', '第6、7节', '第8、9、10节'
+      ],
+      sparecolumns: [
+        { 
+          name: 'classRoomId', 
+          required: true,
+          align: 'left', 
+          label: '教室编号', 
+          field: 'classRoomId', 
+          sortable: true
+        },
+        { name: 'classRoomSize', align: 'left', label: '教室容量', field: 'classRoomSize', sortable: true },
+        { name: 'classRoomType', align: 'left', label: '教室类别', field: 'classRoomType', sortable: true },
+        { name: 'classRoomPos', align: 'left', label: '教室位置', field: 'classRoomPos', sortable: true }
+      ],
+      allClassRooms: [
+        {
+            classRoomId: "333",
+            classRoomType: "实验室",
+            classRoomPos: "三号楼797",
+            classRoomSize: "33",
+            week: "周三",
+            time1: "",
+            time2: "",
+            time3: "",
+            time4: "语文"
         },
         {
-            studentId: '1232', 
-            studentName: 'adad222', 
-            studentGrade: '98'
+            
         },
       ],
       columns: [
         { 
-          name: 'studentId', 
+          name: 'classRoomId', 
           required: true,
-          align: 'center', 
-          label: '学号', 
-          field: 'studentId', 
+          align: 'left', 
+          label: '教室编号', 
+          field: 'classRoomId', 
           sortable: true
         },
-        { name: 'studentName', align: 'center', label: '学生姓名', field: 'studentName', sortable: true },
-        { name: 'studentGrade', align: 'center', label: '成绩', field: 'studentGrade', sortable: true }
+        { name: 'classRoomSize', align: 'left', label: '教室容量', field: 'classRoomSize', sortable: true },
+        { name: 'classRoomType', align: 'left', label: '教室类别', field: 'classRoomType', sortable: true },
+        { name: 'classRoomPos', align: 'left', label: '教室位置', field: 'classRoomPos', sortable: true },
+        { name: 'week', align: 'left', label: '星期', field: 'week', sortable: true },
+        { name: 'time1', align: 'left', label: '第1、2节', field: 'time1', sortable: true },
+        { name: 'time2', align: 'left', label: '第3、4、5节', field: 'time2', sortable: true },
+        { name: 'time3', align: 'left', label: '第6、7节', field: 'time3', sortable: true },
+        { name: 'time4', align: 'left', label: '第8、9、10节', field: 'time4', sortable: true }
       ],
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -253,7 +332,7 @@ export default{
   },
 
   created() {
-    this.getCourseInfoInit()
+    this.getClassRoomInit()
   },
 
   methods:{
@@ -278,21 +357,17 @@ export default{
     goToCourseInfo() {
       this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
     },
-    goToClassRoom() {
-      this.$router.push('/teacher/classroom/' + this.$route.params.teacherId)
-    },
-    getCourseInfoInit() {
+    getClassRoomInit() {
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/teacher/courseinfo/init',
+        url: 'http://localhost:8000/classroom/init',
         params: {
-          "userId": this.teacherId,
-          "operation": "getTeacherCoursesTable",
+          "operation": "getallClassroom",
         }
       }).then(function (response) {
-        _this.options = response.data.teacherCourseTable;
-        _this.courseIds = response.data.teacherCourseIdTb;
+        _this.classroomId = response.data.classroomId;
+        _this.allClassRooms = response.data.allClassRooms;
       })
       .catch(function (error) {
         console.log(error);
@@ -300,20 +375,19 @@ export default{
       .then(function () {
       });
     },
-    getSelectedStudent() {
+    getClassroomInfo() {
       let _this = this
-      var ind = this.options.indexOf(this.whichClass);
+      console.log(this.whichWeek);
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/teacher/courseinfo/getSelectedStudent',
+        url: 'http://localhost:8000/classroom/searchclassroom',
         params: {
-          "userId": this.teacherId,
-          "courseId": this.courseIds[ind],
-          "courseName": this.whichClass,
-          "operation": "getSelectStudent",
+          "classroomId": this.whichClass,
+          "week": this.whichWeek,
+          "operation": "searchClassRoom",
         }
       }).then(function (response) {
-        _this.selectStudent = response.data.selectStudent;
+        _this.allClassRooms = response.data.allClassRooms;
       })
       .catch(function (error) {
         console.log(error);
@@ -321,47 +395,27 @@ export default{
       .then(function () {
       });
     },
-    setGrade(changeId, changeGrade) {
+    searchSpareRoom() {
+      this.searchSpare = true
       let _this = this
-      console.log(changeId);
-      console.log(changeGrade);
-      var ind = this.options.indexOf(this.whichClass);
+      console.log( this.spareWeek);
+      console.log( this.spareTime);
       axios({
-        method: 'POST',
-        url:'http://localhost:8000/teacher/courseinfo/changeGrade',
-        data:{
-          "userId": this.teacherId,
-          "courseName": this.whichClass,
-          "courseId": this.courseIds[ind],
-          "studentId": changeId,
-          "studentGrade": changeGrade,
-          "operation": "changeGrade"
+        method: 'GET',
+        url: 'http://localhost:8000/classroom/searchspareroom',
+        params: {
+          "week": this.spareWeek,
+          "time": this.spareTime,
+          "operation": "searchSpareRoom",
         }
+      }).then(function (response) {
+        _this.spareClassRooms = response.data.spareClassRooms;
       })
-      .then(response => {
-        //console.log(data)
-        console.log(response)
-      }, error=> {
-        //console.log(data)
-        console.log('错误',error.message)
-      })       
-    },
-    retGrade(ip, grade) {
-      console.log(ip);
-      console.log(grade);
-      this.inputId = ip;
-      this.originGrade = grade;
-      console.log(this.inputId);
-    },
-    clear() {
-      console.log(this.inputId);
-      var ip = this.inputId;
-      function check(stu) {
-        return stu.studentId == ip;
-      }
-      var index = this.selectStudent.findIndex(check);
-      console.log(index);
-      this.selectStudent[index].studentGrade = this.originGrade;
+      .catch(function (error) {
+        console.log(error);
+      })
+      .then(function () {
+      });
     }
   }
 }
