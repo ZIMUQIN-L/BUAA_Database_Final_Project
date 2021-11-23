@@ -52,7 +52,6 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToDepart">
             <q-item-section avatar>
                 <q-icon name="attachment" />
@@ -66,6 +65,7 @@
             <q-item
               clickable 
               v-ripple
+              active
               @click="goToCourseInfo">
             <q-item-section avatar>
                 <q-icon name="laptop_chromebook" />
@@ -124,57 +124,61 @@
       />
     </q-header>
   </div>
+
   <div> 
   <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
-    <h5 align = "center"><b>所属院系</b></h5> 
-    <q-card class="my-card">
-      <q-card-section class="bg-blue-grey-2 text-white">
-        <div class="text-h6" align = "center">院系基本信息</div>
-        <!-- <div class="text-subtitle2">by John Doe</div> -->
-        <q-field color="grey-8" label-color="grey-10" outlined label="系号" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpNumber}}</div>
-        </template>
-      </q-field>
-      <q-field color="grey-8" label-color="grey-10" outlined label="系名" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpName}}</div>
-        </template>
-      </q-field>
-      <q-field color="grey-8" label-color="grey-10" outlined label="系主任" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpMaster}}</div>
-        </template>
-      </q-field>
-      </q-card-section>
-    </q-card>
-    <q-separator inset="item" />
+    <h5 align = "center"><b>学生选课与成绩</b></h5> 
     <h4>
-    <q-select color="teal" v-model="who" :options="options" label="院系人员信息查询">
+    <q-select color="teal" v-model="whichClass" :options="options" label="课程名称">
         <template v-slot:prepend>
           <q-icon name="event" />
         </template>
       </q-select>
     </h4>
-    <q-table
-      title="院系成员信息"
-      :data="memberData"
-      :columns="memberCol"
-      row-key="memberName"
-    >
+     <div class="q-pa-md q-gutter-sm">
+       <q-table
+      :rows="selectStudent"
+      :columns="columns"
+      title="选课学生名单"
+      row-key="studentId"
+      >
       <template v-slot:top-right>
       <q-btn
-        label = "查询院系成员"
+        label = "查询选课学生"
         color="white"
         text-color="black"
         icon-right="search"
         no-caps
         flat
-        @click="getDepartMember"
+        @click="getSelectedStudent"
       />
       </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="studentId" :props="props">
+            {{ props.row.studentId }}
+          </q-td>
+          <q-td key="studentName" :props="props">
+            {{ props.row.studentName }}
+          </q-td>
+          <q-td key="studentGrade" :props="props">
+            <div class="text-pre-wrap">{{ props.row.studentGrade }}</div>
+            <q-popup-edit v-model.number="props.row.studentGrade"  @show="retGrade(props.row.studentId, props.row.studentGrade)"
+               @hide = "setGrade(props.row.studentId, props.row.studentGrade)">
+              <q-input type="number" v-model.number="props.row.studentGrade" dense autofocus>
+              <template v-slot:after>
+                <q-btn flat dense color="positive" icon="check_circle" @click="setGrade(props.row.studentId, props.row.studentGrade)" />
+                <q-btn flat dense color="negative" icon="cancel" @click = "clear"/>
+            </template>
+              </q-input>
+            </q-popup-edit>
+          </q-td>
+        </q-tr>
+      </template>
     </q-table>
+  </div>
+
   </div>
   </q-page>
   </div>
@@ -185,50 +189,58 @@ import { ref } from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios';
 
-export default({
+export default{
   data () {
     var teaId = this.$route.params.teacherId
     const leftDrawerOpen = ref(false)
 
     return {
       // teacherId,
-      DpNumber: null,
-      DpMaster: null,
-      DpName: null,
       teacherId: ref(teaId),
       readonly: ref(false),
       teacherName: ref(''),
-      teacherPhone: ref(''),
-      teacherMail: ref(''),
       leftDrawerOpen,
-      who:ref(''),
+      whichClass:ref(''),
+      inputId: null,
+      originGrade: null,
       options: [
-        "学生", "教师", "所有"
+       
       ],
-      memberCol: [
+      courseIds: [
+
+      ],
+      selectStudent: [
         {
-          name: 'memberName',
+            studentId: '123', 
+            studentName: 'adad', 
+            studentGrade: '99'
+        },
+        {
+            studentId: '1232', 
+            studentName: 'adad222', 
+            studentGrade: '98'
+        },
+      ],
+      columns: [
+        { 
+          name: 'studentId', 
           required: true,
-          label: '成员姓名',
-          align: 'left',
-          field: 'memberName',
-          format: val => `${val}`,
+          align: 'center', 
+          label: '学号', 
+          field: 'studentId', 
           sortable: true
         },
-        {name: 'memberNumber', align: 'left', label: '成员学工号',  field: 'memberNumber', sortable: true},
-        {name: 'memberIden', align: 'left', label: '成员身份',  field: 'memberIden', sortable: true}
-      ],
-      memberData: [
-
+        { name: 'studentName', align: 'center', label: '学生姓名', field: 'studentName', sortable: true },
+        { name: 'studentGrade', align: 'center', label: '成绩', field: 'studentGrade', sortable: true }
       ],
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
     }
   },
 
   created() {
-    this.getDepartInit()
+    this.getCourseInfoInit()
   },
 
   methods:{
@@ -253,53 +265,87 @@ export default({
     goToCourseInfo() {
       this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
     },
-    getDepartInit() {
-      let _this = this
-      axios({
-        method: 'GET',
-        url: 'http://localhost:8000/teacher/depart/init',
-        params: {
-            "teacherId": _this.$route.params.teacherId,
-            "operation": "teacherDepartInit"
-        }
-      }).then(function (response) {
-          // handle success
-          _this.DpName = response.data.data.depart.DpName;
-          _this.DpNumber = response.data.data.depart.DpNumber;
-          _this.DpMaster = response.data.data.depart.DpMaster;
-          console.log(response);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-        });
-    },
-    getDepartMember() {
-      console.log(this.who);
-      let _this = this
+    getCourseInfoInit() {
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/teacher/depart/member',
+        url: 'http://localhost:8000/teacher/courseinfo/init',
         params: {
           "userId": this.teacherId,
-          "operation": "getTeacherDepartMember",
-          "type": this.who
+          "operation": "getTeacherCoursesTable",
         }
       }).then(function (response) {
-        _this.memberData = response.data.memberData;
+        _this.options = response.data.teacherCourseTable;
+        _this.courseIds = response.data.teacherCourseIdTb;
       })
       .catch(function (error) {
         console.log(error);
       })
       .then(function () {
       });
-      console.log("success!");
+    },
+    getSelectedStudent() {
+      var ind = this.options.indexOf(this.whichClass);
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/teacher/courseinfo/getSelectedStudent',
+        params: {
+          "userId": this.teacherId,
+          "courseId": this.courseIds[ind],
+          "courseName": this.whichClass,
+          "operation": "getSelectStudent",
+        }
+      }).then(function (response) {
+        _this.selectStudent = response.data.selectStudent;
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .then(function () {
+      });
+    },
+    setGrade(changeId, changeGrade) {
+      console.log(changeId);
+      console.log(changeGrade);
+      var ind = this.options.indexOf(this.whichClass);
+      axios({
+        method: 'POST',
+        url:'http://localhost:8000/teacher/courseinfo/changeGrade',
+        data:{
+          "userId": this.teacherId,
+          "courseName": this.whichClass,
+          "courseId": this.courseIds[ind],
+          "studentId": changeId,
+          "studentGrade": changeGrade,
+          "operation": "changeGrade"
+        }
+      })
+      .then(response => {
+        //console.log(data)
+        console.log(response)
+      }, error=> {
+        //console.log(data)
+        console.log('错误',error.message)
+      })       
+    },
+    retGrade(ip, grade) {
+      console.log(ip);
+      console.log(grade);
+      this.inputId = ip;
+      this.originGrade = grade;
+      console.log(this.inputId);
+    },
+    clear() {
+      console.log(this.inputId);
+      var ip = this.inputId;
+      function check(stu) {
+        return stu.studentId == ip;
+      }
+      var index = this.selectStudent.findIndex(check);
+      console.log(index);
+      this.selectStudent[index].studentGrade = this.originGrade;
     }
   }
-})
+}
 </script>
 
 <style>

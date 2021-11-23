@@ -63,6 +63,19 @@
 
             <q-item
               clickable 
+              v-ripple
+              @click="goToCourseInfo">
+            <q-item-section avatar>
+                <q-icon name="laptop_chromebook" />
+            </q-item-section>
+
+              <q-item-section>
+                学生选课与成绩
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
               active
               v-ripple
               @click="goToSettings">
@@ -254,6 +267,9 @@ export default {
     },
     goToDepart() {
       this.$router.push('/teacher/depart/' + this.$route.params.teacherId)
+    },
+    goToCourseInfo() {
+      this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
     },
     onClick:function() {
       let _this = this
