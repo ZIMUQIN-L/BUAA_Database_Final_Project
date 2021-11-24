@@ -30,6 +30,8 @@ const routes = [
       { path: 'student/settings/:studentId', component: () => import('src/pages/student/Stu_Settings.vue') },
       { path: 'student/class/:studentId', component: () => import('src/pages/student/Stu_Class.vue') },
       { path: 'student/info/:studentId', component: () => import('src/pages/student/Stu_Info.vue') },
+      { path: 'student/depart/:studentId', component: () => import('src/pages/student/Stu_Depart.vue') },
+      { path: 'student/classroom/:studentId', component: () => import('src/pages/student/Stu_ClassRoom.vue') },
     ]
   },
 

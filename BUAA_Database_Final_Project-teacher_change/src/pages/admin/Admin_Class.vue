@@ -194,6 +194,11 @@
       />
 
       <q-input
+        v-model="newCap"
+        label="班级人数"
+      />
+
+      <q-input
         v-model="newTeacherId"
         label="负责教师工号"
       />
@@ -228,6 +233,11 @@
       <q-input
         v-model="oldMajor"
         label="系号"
+      />
+
+      <q-input
+        v-model="oldCap"
+        label="班级人数"
       />
 
       <q-input
@@ -271,9 +281,11 @@ export default({
       newId: '',
       newMajor: '',
       newTeacherId: '',
+      newCap: '',
       oldId: '',
       oldMajor: '',
       oldTeacherId: '',
+      oldCap: '',
       columns,
       rows_selected,
       selected: ref([]),
@@ -370,6 +382,7 @@ let _this = this
             "gpa": '',
             "majorId": this.newMajor,
             "teacherId": this.newTeacherId,
+            "cap": this.newCap,
             "operation": "addClassInfo"
           }
         }).then(function (response) {
@@ -406,6 +419,7 @@ let _this = this
             "gpa": '',
             "majorId": this.oldMajor,
             "teacherId": this.oldTeacherId,
+            "cap": this.oldCap,
             "operation": "changeClassInfo"
           }
         }).then(function (response) {

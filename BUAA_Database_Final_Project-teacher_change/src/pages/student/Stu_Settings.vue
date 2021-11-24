@@ -64,6 +64,32 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToDepart">
+            <q-item-section avatar>
+                <q-icon name="attachment" />
+            </q-item-section>
+
+              <q-item-section>
+                院系
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToClassRoom">
+            <q-item-section avatar>
+                <q-icon name="house" />
+            </q-item-section>
+
+              <q-item-section>
+                教室信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               active
               @click="goToSettings">
               <q-item-section avatar>
@@ -256,6 +282,12 @@ export default {
     },
     goToInfo() {
       this.$router.push('/student/info/' + this.$route.params.studentId)
+    },
+    goToDepart() {
+      this.$router.push('/student/depart/' + this.$route.params.studentId)
+    },
+    goToClassRoom() {
+      this.$router.push('/student/classroom/' + this.$route.params.studentId)
     },
     onClick:function() {
       let _this = this

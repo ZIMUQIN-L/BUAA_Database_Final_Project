@@ -39,6 +39,19 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToClass">
+              <q-item-section avatar>
+                <q-icon name="class" />
+              </q-item-section>
+
+              <q-item-section>
+                班级
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToInfo">
             <q-item-section avatar>
                 <q-icon name="import_contacts" />
@@ -59,19 +72,6 @@
 
               <q-item-section>
                 院系
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable 
-              v-ripple
-              @click="goToCourseInfo">
-            <q-item-section avatar>
-                <q-icon name="laptop_chromebook" />
-            </q-item-section>
-
-              <q-item-section>
-                学生选课与成绩
               </q-item-section>
             </q-item>
 
@@ -118,7 +118,6 @@
         <q-toolbar-title>
           教务系统
         </q-toolbar-title>
-
       
 
         <div>
@@ -183,7 +182,7 @@
           <q-table
           :rows="spareClassRooms"
           :columns="sparecolumns"
-          row-key="studentId"
+          row-key="classRoomId"
           >
           </q-table>
         </q-card-section>
@@ -340,25 +339,25 @@ export default{
       this.$router.push('/')
     },
     goToHomepage() {
-      this.$router.push('/teacher/homepage/' + this.$route.params.teacherId)
+      this.$router.push('/student/homepage/' + this.$route.params.studentId)
     },
     goToLesson() {
-      this.$router.push('/teacher/lesson/' + this.$route.params.teacherId)
+      this.$router.push('/student/lesson/' + this.$route.params.studentId)
+    },
+    goToClass() {
+      this.$router.push('/student/class/' + this.$route.params.studentId)
     },
     goToSettings() {
-      this.$router.push('/teacher/settings/' + this.$route.params.teacherId)
+      this.$router.push('/student/settings/' + this.$route.params.studentId)
     },
     goToInfo() {
-      this.$router.push('/teacher/info/' + this.$route.params.teacherId)
+      this.$router.push('/student/info/' + this.$route.params.studentId)
     },
     goToDepart() {
-      this.$router.push('/teacher/depart/' + this.$route.params.teacherId)
-    },
-    goToCourseInfo() {
-      this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
+      this.$router.push('/student/depart/' + this.$route.params.studentId)
     },
     goToClassRoom() {
-      this.$router.push('/teacher/classroom/' + this.$route.params.teacherId)
+      this.$router.push('/student/classroom/' + this.$route.params.studentId)
     },
     getClassRoomInit() {
       let _this = this
