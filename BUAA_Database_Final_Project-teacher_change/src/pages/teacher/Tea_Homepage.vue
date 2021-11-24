@@ -45,7 +45,59 @@
             </q-item-section>
 
               <q-item-section>
+                信息
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToDepart">
+            <q-item-section avatar>
+                <q-icon name="attachment" />
+            </q-item-section>
+
+              <q-item-section>
+                院系
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToCourseInfo">
+            <q-item-section avatar>
+                <q-icon name="laptop_chromebook" />
+            </q-item-section>
+
+              <q-item-section>
+                学生选课与成绩
+              </q-item-section>
+            </q-item>
+
+            <!-- <q-item
+              clickable 
+              v-ripple
+              @click="goToExam">
+            <q-item-section avatar>
+                <q-icon name="import_contacts" />
+            </q-item-section>
+
+              <q-item-section>
                 考试
+              </q-item-section>
+            </q-item> -->
+
+            <q-item
+              clickable 
+              v-ripple
+              @click="goToClassRoom">
+            <q-item-section avatar>
+                <q-icon name="house" />
+            </q-item-section>
+
+              <q-item-section>
+                教室信息
               </q-item-section>
             </q-item>
 
@@ -139,8 +191,20 @@ export default({
     goToSettings() {
       this.$router.push('/teacher/settings/' + this.$route.params.teacherId)
     },
-    goToInfo() {
+    goToExam() {
       this.$router.push('/teacher/exam/' + this.$route.params.teacherId)
+    },
+    goToInfo() {
+      this.$router.push('/teacher/info/' + this.$route.params.teacherId)
+    },
+    goToCourseInfo() {
+      this.$router.push('/teacher/courseinfo/' + this.$route.params.teacherId)
+    },
+    goToClassRoom() {
+      this.$router.push('/teacher/classroom/' + this.$route.params.teacherId)
+    },
+    goToDepart() {
+      this.$router.push('/teacher/depart/' + this.$route.params.teacherId)
     }
   }
 })

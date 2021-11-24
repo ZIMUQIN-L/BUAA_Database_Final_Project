@@ -360,7 +360,8 @@ export default({
       oldTeacher: '',
       oldTime: '',
       columns,
-      rows_selected
+      rows_selected,
+      selected: ref([]),
     }
   },
 
@@ -413,7 +414,7 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/lesson/',
+            url: 'http://localhost:8000/admin/lesson/deleteInfo/',
             data: {
                 "id": c_id,
                 "operation": "deleteLessonInfo"
@@ -448,7 +449,7 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/",
+          url: "http://localhost:8000/admin/lesson/addInfo/",
           data: {
             "id": this.newId,		// 课程 id
             "name": this.newClass,		// 课程名称
@@ -488,7 +489,7 @@ let _this = this
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/",
+          url: "http://localhost:8000/admin/lesson/changeInfo/",
           data: {
             "id": this.oldId,		// 课程 id
             "name": this.oldClass,		// 课程名称
@@ -522,7 +523,7 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/',
+        url: 'http://localhost:8000/admin/lesson/getInfo/',
         params: {
             "operation": "getLessonInfo"
         }

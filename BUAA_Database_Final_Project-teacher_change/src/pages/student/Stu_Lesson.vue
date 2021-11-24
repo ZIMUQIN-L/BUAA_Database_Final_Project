@@ -296,9 +296,9 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/',
+            url: 'http://localhost:8000/student/lesson/delete/',
             data: {
-                "userId": this.studentId,
+                "studentId": this.studentId,
                 "courseId": c_id,
                 "operation": "delete"
             }
@@ -351,9 +351,9 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/",
+          url: "http://localhost:8000/student/lesson/select/",
           data: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "courseId": c_id,
             "operation": "select"
           }
@@ -386,9 +386,9 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/querySelected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "searchText": "",
             "operation": "selected"
         }
@@ -415,15 +415,15 @@ let _this = this
   let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/queryUnselected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "searchText": "",
             "operation": "unselected"
         }
       }).then(function (response) {
           // handle success
-          _this.rows_unselected = response.data.data.courseTable;
+          _this.rows_unselected = response.data.data.unCourseTable;
           console.log(response);
         })
         .catch(function (error) {

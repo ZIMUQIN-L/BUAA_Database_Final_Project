@@ -275,11 +275,13 @@ export default({
       oldMajor: '',
       oldTeacherId: '',
       columns,
-      rows_selected
+      rows_selected,
+      selected: ref([]),
     }
   },
 
   created() {
+    this.checkCourseInfo()
   },
 
   methods:{
@@ -327,7 +329,7 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/class/delInfo',
+            url: 'http://localhost:8000/admin/class/delInfo/',
             data: {
                 "id": c_id,
                 "operation": "deleteClassInfo"
@@ -362,7 +364,7 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/class/addInfo",
+          url: "http://localhost:8000/admin/class/addInfo/",
           data: {
             "id": this.newId,
             "gpa": '',

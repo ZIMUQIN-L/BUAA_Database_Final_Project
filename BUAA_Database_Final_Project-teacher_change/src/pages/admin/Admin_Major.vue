@@ -312,11 +312,13 @@ export default({
       oldEmail: '',
       oldCredit: '',
       columns,
-      rows_selected
+      rows_selected,
+      selected: ref([]),
     }
   },
 
   created() {
+    this.checkCourseInfo()
   },
 
   methods:{
@@ -364,7 +366,7 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/major/delInfo',
+            url: 'http://localhost:8000/admin/major/delInfo/',
             data: {
                 "id": c_id,
                 "operation": "deleteMajorInfo"
@@ -399,7 +401,7 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/major/addInfo",
+          url: "http://localhost:8000/admin/major/addInfo/",
           data: {
             "id": this.newId,
             "name": this.newName,

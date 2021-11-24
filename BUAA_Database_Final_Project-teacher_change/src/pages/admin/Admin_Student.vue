@@ -233,6 +233,12 @@
         label="联系电话"
       />
 
+      <q-input
+        v-model="newMail"
+        label="电子邮箱"
+      />
+
+
     </div>
 
       <div class="q-pa-md">
@@ -305,6 +311,12 @@
         label="联系电话"
       />
 
+      <q-input
+        v-model="newMail"
+        label="电子邮箱"
+      />
+
+
     </div>
 
       <div class="q-pa-md">
@@ -330,7 +342,8 @@ const columns = [
   { name: 'studentClassNumber', align: 'center', label: '班号', field: 'studentClassNumber', sortable: true },
   { name: 'studentMajorNumber', align: 'center', label: '系号', field: 'studentMajorNumber', sortable: true },
   { name: 'studentPassword', align: 'center', label: '登录密码', field: 'studentPassword', sortable: true },
-  { name: 'studentTel', align: 'center', label: '联系电话', field: 'studentTel', sortable: true }
+  { name: 'studentTel', align: 'center', label: '联系电话', field: 'studentTel', sortable: true },
+  { name: 'studentMail', align: 'center', label: '电子邮箱', field: 'studentMail', sortable: true }
 ]
 
 var rows_selected = [];
@@ -354,6 +367,7 @@ export default({
       newMajorNumber: '',
       newPassword: '',
       newTel: '',
+      newMail: '',
       oldId: '',
       oldName: '',
       oldGender: '',
@@ -364,8 +378,10 @@ export default({
       oldMajorNumber: '',
       oldPassword: '',
       oldTel: '',
+      oldMail: '',
       columns,
-      rows_selected
+      rows_selected,
+      selected: ref([]),
     }
   },
 
@@ -418,7 +434,7 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/student/',
+            url: 'http://localhost:8000/admin/student/delInfo/',
             data: {
                 "id": c_id,
                 "operation": "deleteStudentInfo"
@@ -426,7 +442,7 @@ let _this = this;
           }).then(function (response) {
               // handle success
               console.log(response);
-              _this.rows_selected = response.data.data.courseInfo;
+              _this.rows_selected = response.data.data.studentInfo;
             })
             .catch(function (error) {
               // handle error
@@ -453,7 +469,7 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/student/",
+          url: "http://localhost:8000/admin/student/addInfo/",
           data: {
             "studentId": this.newId,
             "studentName": this.newName,
@@ -465,12 +481,13 @@ let _this = this
             "studentMajorNumber": this.newMajorNumber,
             "studentPassword": this.newPassword,
             "studentTel": this.newTel,
+            "studentMail": this.newMail,
             "operation": "addStudentInfo"
           }
         }).then(function (response) {
               // handle success
               console.log(response);
-              _this.rows_selected = response.data.data.courseInfo;
+              _this.rows_selected = response.data.data.studentInfo;
               this.$q.notify({
           message: '课程已经添加！',
           color: 'green-4'})
@@ -495,7 +512,7 @@ let _this = this
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/student/",
+          url: "http://localhost:8000/admin/student/changeInfo/",
           data: {
             "studentId": this.oldId,
             "studentName": this.oldName,
@@ -507,12 +524,13 @@ let _this = this
             "studentMajorNumber": this.oldMajorNumber,
             "studentPassword": this.oldPassword,
             "studentTel": this.oldTel,
+            "studentMail": this.oldMail,
             "operation": "changeStudentInfo"
           }
         }).then(function (response) {
               // handle success
               console.log(response);
-              _this.rows_selected = response.data.data.courseInfo;
+              _this.rows_selected = response.data.data.studentInfo;
               this.$q.notify({
           message: '课程已经添加！',
           color: 'green-4'})
@@ -531,14 +549,14 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/student/',
+        url: 'http://localhost:8000/admin/student/getInfo/',
         params: {
             "operation": "getStudentInfo"
         }
       }).then(function (response) {
           // console.log(response);
           // handle success
-          _this.rows_selected = response.data.data.courseInfo;
+          _this.rows_selected = response.data.data.studentInfo;
 //           console.log(rows_selected);
         })
         .catch(function (error) {

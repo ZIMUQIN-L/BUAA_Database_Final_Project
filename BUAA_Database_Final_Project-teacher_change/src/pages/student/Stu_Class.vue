@@ -152,7 +152,7 @@ var rows_selected = [];
 
 export default({
   data () {
-    var stuId = this.$route.params.studentId
+    var studentId = this.$route.params.studentId
     const leftDrawerOpen = ref(false)
 
     return {
@@ -161,12 +161,13 @@ export default({
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       columns,
-      rows_selected
+      rows_selected,
+      studentId
     }
   },
 
   created() {
-    //this.checkCourseInfo()
+    this.checkCourseInfo()
   },
 
   methods:{

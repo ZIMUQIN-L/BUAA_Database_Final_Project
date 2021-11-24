@@ -79,7 +79,7 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -92,10 +92,43 @@ export default {
 
   methods :{
     onClick:function() {
-      if (this.adminId == 12345) {
-        this.$router.push('/admin/homepage');
-        // window.open('http://localhost:8080/#/admin/homepage');
-      }
+      // if (this.adminId == 12345) {
+      //   this.$router.push('/admin/homepage');
+      //   // window.open('http://localhost:8080/#/admin/homepage');
+      // }
+      let _this = this
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/admin/login/',
+        params: {
+            "adminId": this.adminId,
+            "adminPwd": this.adminPwd
+        }
+      }).then(function (response) {
+        console.log(response);
+          if (!response.data.status) {
+            _this.$router.push('/admin/homepage/');
+            console.log(response);
+          }
+          else {
+            _this.$q.notify({
+            type: 'negative',
+            message: '请输入正确的用户名 / 密码'
+          })
+          }
+          
+        })
+        .catch(function (error) {
+          // handle error
+            _this.$q.notify({
+            type: 'negative',
+            message: '请输入正确的用户名 / 密码'
+          })
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
     },
     back:function() {
       this.$router.push('/')

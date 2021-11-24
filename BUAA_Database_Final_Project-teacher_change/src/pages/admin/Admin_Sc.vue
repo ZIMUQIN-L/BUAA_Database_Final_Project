@@ -142,7 +142,7 @@
     <div  class="q-pa-sm">
       <q-input outlined v-model="studentId" label="学号" :dense="dense">
        <template v-slot:append>
-          <q-icon name="search" />
+          <q-icon name="search" @click="checkCourse"/>
         </template>
       </q-input>
     </div>
@@ -331,9 +331,9 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/',
+            url: 'http://localhost:8000/student/lesson/delete/',
             data: {
-                "userId": this.studentId,
+                "studentId": this.studentId,
                 "courseId": c_id,
                 "operation": "delete"
             }
@@ -386,9 +386,9 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/",
+          url: "http://localhost:8000/student/lesson/select/",
           data: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "courseId": c_id,
             "operation": "select"
           }
@@ -422,9 +422,9 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/querySelected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "operation": "selected"
         }
       }).then(function (response) {
@@ -447,19 +447,53 @@ let _this = this
     // console.log(this.rows_selected);
   }
     },
+checkCourse(){
+  if (this.studentId != "") {
+  // var rs = this.rows_selected;
+      // console.log(rows_selected);
+      // console.log("hahaha")
+      // console.log(this.studentId);
+let _this = this
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/student/check/',
+        params: {
+            "studentId": this.studentId
+        }
+      }).then(function (response) {
+          // console.log(response);
+          // handle success
+          _this.rows_selected = response.data.data.courseTable;
+          _this.rows_unselected = response.data.data.unCourseTable;
+//           console.log(rows_selected);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+    console.log("hahaha");
+    // console.log(this.rows_selected);
+    // console.log(rows_selected);
+    // this.rows_selected = rs;
+    // console.log(this.rows_selected);
+  }
+    },
     checkUnselectedCourse(){
   if (this.studentId != "") {
   let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/queryUnselected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "operation": "unselected"
         }
       }).then(function (response) {
           // handle success
-          _this.rows_unselected = response.data.data.courseTable;
+          _this.rows_unselected = response.data.data.unCourseTable;
           console.log(response);
         })
         .catch(function (error) {

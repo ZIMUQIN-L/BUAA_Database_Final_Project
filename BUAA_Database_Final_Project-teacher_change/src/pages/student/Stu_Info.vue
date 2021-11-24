@@ -230,7 +230,7 @@ export default({
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/info/',
+        url: 'http://localhost:8000/student/info/query/',
         params: {
             "studentId": _this.$route.params.studentId,
             "operation": "checkStudentInfo"
@@ -258,8 +258,8 @@ export default({
       let _this = this
       axios({
         method: 'POST',
-        url: 'http://localhost:8000/student/info/',
-        params: {
+        url: 'http://localhost:8000/student/info/update/',
+        data: {
             "operation": "changeStudentInfo",
             "studentId": _this.$route.params.studentId,
             "studentName": this.studentName,
