@@ -392,6 +392,7 @@ let _this = this
               this.$q.notify({
           message: "班级已经添加！",
           color: 'green-4'})
+          
             })
             .catch(function (error) {
               // handle error
@@ -399,9 +400,11 @@ let _this = this
             })
             .then(function () {
               // always executed
+            
             });
         
       })
+    
     },
     changeSelectedCourse(){
       this.$q.dialog({
