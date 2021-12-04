@@ -39,6 +39,19 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToGrade">
+            <q-item-section avatar>
+                <q-icon name="laptop_chromebook" />
+            </q-item-section>
+
+              <q-item-section>
+                成绩查询
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToClass">
               <q-item-section avatar>
                 <q-icon name="class" />
@@ -239,6 +252,7 @@ const columns = [
   { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
   { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
   { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
+  { name: 'place', align: 'center', label: '上课地点', field: 'place', sortable: true },
   { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
   { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
   { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
@@ -302,11 +316,8 @@ export default({
     goToInfo() {
       this.$router.push('/student/info/' + this.$route.params.studentId)
     },
-    goToDepart() {
-      this.$router.push('/student/depart/' + this.$route.params.studentId)
-    },
-    goToClassRoom() {
-      this.$router.push('/student/classroom/' + this.$route.params.studentId)
+    goToGrade() {
+      this.$router.push('/student/grade/' + this.$route.params.studentId)
     },
     deleteSelectedCourse(){
       // console.log(this.studentId);
@@ -328,9 +339,9 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/delete/',
+            url: 'http://localhost:8000/student/lesson/',
             data: {
-                "studentId": this.studentId,
+                "userId": this.studentId,
                 "courseId": c_id,
                 "operation": "delete"
             }
@@ -383,9 +394,9 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/select/",
+          url: "http://localhost:8000/student/lesson/",
           data: {
-            "studentId": this.studentId,
+            "userId": this.studentId,
             "courseId": c_id,
             "operation": "select"
           }
@@ -418,9 +429,9 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/querySelected/',
+        url: 'http://localhost:8000/student/lesson/',
         params: {
-            "studentId": this.studentId,
+            "userId": this.studentId,
             "searchText": "",
             "operation": "selected"
         }
@@ -447,15 +458,15 @@ let _this = this
   let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/queryUnselected/',
+        url: 'http://localhost:8000/student/lesson/',
         params: {
-            "studentId": this.studentId,
+            "userId": this.studentId,
             "searchText": "",
             "operation": "unselected"
         }
       }).then(function (response) {
           // handle success
-          _this.rows_unselected = response.data.data.unCourseTable;
+          _this.rows_unselected = response.data.data.courseTable;
           console.log(response);
         })
         .catch(function (error) {

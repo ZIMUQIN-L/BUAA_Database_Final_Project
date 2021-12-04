@@ -1,6 +1,6 @@
 <template>
-  <div>  
-    <q-drawer
+<div>
+<q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         :width="200"
@@ -39,6 +39,7 @@
             <q-item
               clickable 
               v-ripple
+              active
               @click="goToGrade">
             <q-item-section avatar>
                 <q-icon name="laptop_chromebook" />
@@ -78,7 +79,6 @@
             <q-item
               clickable 
               v-ripple
-              active
               @click="goToDepart">
             <q-item-section avatar>
                 <q-icon name="attachment" />
@@ -102,6 +102,7 @@
               </q-item-section>
             </q-item>
 
+
             <q-item
               clickable 
               v-ripple
@@ -117,6 +118,7 @@
           </q-list>
         </q-scroll-area>
       </q-drawer>
+</div>
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -149,58 +151,75 @@
         class="header-image absolute-top"
       />
     </q-header>
-  </div>
+
+
+
   <div> 
-  <q-page class="q-pa-sm">
-    <div class="q-pa-sm bg-grey-3">
-    <h5 align = "center"><b>所属院系</b></h5> 
-    <q-card class="my-card">
-      <q-card-section class="bg-blue-grey-2 text-white">
-        <div class="text-h6" align = "center">院系基本信息</div>
-        <!-- <div class="text-subtitle2">by John Doe</div> -->
-        <q-field color="grey-8" label-color="grey-10" outlined label="系号" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpNumber}}</div>
-        </template>
-      </q-field>
-      <q-field color="grey-8" label-color="grey-10" outlined label="系名" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpName}}</div>
-        </template>
-      </q-field>
-      <q-field color="grey-8" label-color="grey-10" outlined label="系主任" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{DpMaster}}</div>
-        </template>
-      </q-field>
-      </q-card-section>
-    </q-card>
-    <q-separator inset="item" />
-    <h4>
-    <q-select color="teal" v-model="who" :options="options" label="院系人员信息查询">
+
+    <q-dialog v-model="inception">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">成绩查询</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+      <q-select color="teal" v-model="whichClass" :options="lessons" label="课程" style="width: 420px">
         <template v-slot:prepend>
           <q-icon name="event" />
         </template>
       </q-select>
-    </h4>
-    <q-table
-      title="院系成员信息"
-      :rows="memberData"
-      :columns="memberCol"
-      row-key="memberName"
-    >
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="查询" @click="searchClassGrade" />
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="searchGrade" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-teal text-white" style="width: 800px">
+        <q-card-section>
+          <div class="text-h6">课程成绩信息</div>
+        </q-card-section>
+        <q-card-section>
+      <q-field standout  style="width: 280px" center readonly>
+        <template v-slot:control>
+          <h5><div class="self-center full-width no-outline">{{whichClass}}最终成绩:{{grade}}</div></h5>
+        </template>
+      </q-field>
+
+        </q-card-section>
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="退出" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+  <q-page class="q-pa-sm">
+    <div class="q-pa-sm bg-grey-3">
+    <h5 align = "center"><b>学生成绩</b></h5> 
+     <div class="q-pa-md q-gutter-sm">
+       <q-table
+      :rows="selectCourse"
+      :columns="columns"
+      title="课程成绩"
+      row-key="courseId"
+      >
       <template v-slot:top-right>
       <q-btn
-        label = "查询院系成员"
+        label = "查询课程成绩"
         color="white"
         text-color="black"
         icon-right="search"
         no-caps
         flat
-        @click="getDepartMember"
+        @click="inception = true"
       />
       </template>
     </q-table>
+  </div>
+
   </div>
   </q-page>
   </div>
@@ -211,47 +230,48 @@ import { ref } from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios';
 
+const columns = [
+  { name: 'courseId', align: 'left', label: '课程号', field: 'courseId', sortable: true },
+  { name: 'courseName', align: 'left', label: '课程名称', field: 'courseName', sortable: true },
+  { name: 'courseGrade', align: 'left', label: '课程成绩', field: 'courseGrade', sortable: true },
+  { name: 'courseTeacher', align: 'left', label: '课程教师', field: 'courseTeacher', sortable: true }
+]
+
+var rows_selected = [];
+
 export default{
   data () {
-    var stuId = this.$route.params.studentId
+    var studentId = this.$route.params.studentId
     const leftDrawerOpen = ref(false)
 
     return {
-      // teacherId,
-      DpNumber: null,
-      DpMaster: null,
-      DpName: null,
-      studentId: ref(stuId),
-      readonly: ref(false),
       leftDrawerOpen,
-      who:ref(''),
-      options: [
-        "学生", "教师", "所有"
-      ],
-      memberCol: [
-        {
-          name: 'memberName',
-          required: true,
-          label: '成员姓名',
-          align: 'left',
-          field: 'memberName',
-          format: val => `${val}`,
-          sortable: true
-        },
-        {name: 'memberNumber', align: 'left', label: '成员学工号',  field: 'memberNumber', sortable: true},
-        {name: 'memberIden', align: 'left', label: '成员身份',  field: 'memberIden', sortable: true}
-      ],
-      memberData: [
-
-      ],
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      lessons: [
+
+      ],
+      whichClass: "",
+      inception: false,
+      searchGrade: false,
+      columns,
+      rows_selected,
+      studentId,
+      grade: "98",
+      selectCourse: [
+        // {
+        //   "courseId": "12345",
+        //   "courseName": "编译原理",
+        //   "courseGrade": "98",
+        //   "courseTeacher": "张三"
+        // }
+      ]
     }
   },
 
   created() {
-    this.getDepartInit()
+    this.checkCourseInfo()
   },
 
   methods:{
@@ -279,24 +299,21 @@ export default{
     goToClassRoom() {
       this.$router.push('/student/classroom/' + this.$route.params.studentId)
     },
-    goToGrade() {
-      this.$router.push('/student/grade/' + this.$route.params.studentId)
-    },
-    getDepartInit() {
+    checkCourseInfo(){
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/depart/init/',
+        url: 'http://localhost:8000/student/gradeInit/',
         params: {
-            "studentId": _this.$route.params.studentId,
-            "operation": "studentDepartInit"
+            "studentId": this.studentId,
+            "operation": "getInitGrade"
         }
       }).then(function (response) {
+          // console.log(response);
           // handle success
-          _this.DpName = response.data.data.depart.DpName;
-          _this.DpNumber = response.data.data.depart.DpNumber;
-          _this.DpMaster = response.data.data.depart.DpMaster;
-          console.log(response);
+          _this.selectCourse = response.data.selectCourse;
+          _this.lessons = response.data.lessons;
+//           console.log(rows_selected);
         })
         .catch(function (error) {
           // handle error
@@ -305,28 +322,27 @@ export default{
         .then(function () {
           // always executed
         });
-    },
-    getDepartMember() {
-      console.log(this.who);
-      let _this = this
+    console.log("hahaha");
+    },
+    searchClassGrade() {
+      this.searchGrade = true;
+      let _this = this;
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/depart/member/',
+        url: 'http://localhost:8000/student/searchcoursegrade/',
         params: {
-          "userId": this.studentId,
-          "operation": "getStudentDepartMember",
-          "type": this.who
+          "studentId": this.studentId,
+          "lesson": this.whichClass,
+          "operation": "searchCourseGrade",
         }
       }).then(function (response) {
-        console.log(response);
-        _this.memberData = response.data.memberData;
+        _this.grade = response.data.grade;
       })
       .catch(function (error) {
         console.log(error);
       })
       .then(function () {
       });
-      console.log("success!");
     }
   }
 }
@@ -343,4 +359,27 @@ export default{
    background-repeat: no-repeat; /* Do not repeat the image */
    background-size: cover; /* Resize the background image to cover the entire container */
   }
+</style>
+
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  max-height: 700px
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #D6EAF8
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
 </style>

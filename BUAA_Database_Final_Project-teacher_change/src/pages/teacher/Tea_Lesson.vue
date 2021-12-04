@@ -229,14 +229,14 @@
           :rules="[ val => val && val.length > 0 || '请输入课程考核方式']"
         />
 
-        <q-input
+        <!-- <q-input
           filled
           v-model="newTime"
           label="新添课程时间"
           hint="上课时间"
           lazy-rules
           :rules="[ val => val && val.length > 0 || '请输入该课程上课时间']"
-        />
+        /> -->
 
         <div>
           <q-btn label="提交" type="submit" color="primary" v-close-popup/>
@@ -345,7 +345,7 @@ export default {
         {name: 'courseSum', label: '课程容量', field: 'courseSum', sortable: true },
         {name: 'courseExam', label: '考核形式', field: 'courseExam', sortable: true },
         {name: 'courseCredit', label: '学分', field: 'courseCredit', sortable: true },
-        {name: 'courseTime', label: '上课时间', field: 'courseTime', sortable: true }
+        //{name: 'courseTime', label: '上课时间', field: 'courseTime', sortable: true }
       ],
       teacherCourse: [
         // {
@@ -489,7 +489,7 @@ export default {
     //   // this.tasks.splice(index, 1)
     // },
     addClass() {
-      if (this.newClass !== '' && this.newSum !== '' && this.newTime != ''
+      if (this.newClass !== '' && this.newSum !== '' 
         && this.newType != '' && this.newExam != '' && this.newCredit != '') {
         this.teacherCourse.push({
           courseName: this.newClass,
@@ -497,7 +497,7 @@ export default {
           courseSum: this.newSum,
           courseExam: this.newExam,
           courseCredit: this.newCredit,
-          courseTime: this.newTime
+          // courseTime: this.newTime
         })
       axios({
         method: 'POST',
@@ -508,8 +508,7 @@ export default {
           "courseType": this.newType, 
           "courseSum": this.newSum,
           "courseExam": this.newExam,
-          "courseCredit": this.newCredit, 
-    	    "courseTime": this.newTime, 
+          "courseCredit": this.newCredit,
           "operation": "add"
         }
       })
@@ -544,7 +543,7 @@ export default {
     },
     onSubmit () {
       if (this.newClass !== '' && this.newSum !== '' && this.newType != '' 
-        && this.newTime != '' && this.newExam != '' && this.newCredit != '') {
+         && this.newExam != '' && this.newCredit != '') {
         this.addClass()
         this.$q.notify({
           color: 'green-4',

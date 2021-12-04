@@ -38,6 +38,19 @@
             <q-item
               clickable 
               v-ripple
+              @click="goToGrade">
+            <q-item-section avatar>
+                <q-icon name="laptop_chromebook" />
+            </q-item-section>
+
+              <q-item-section>
+                成绩查询
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable 
+              v-ripple
               @click="goToClass">
               <q-item-section avatar>
                 <q-icon name="class" />
@@ -288,6 +301,9 @@ export default {
     },
     goToClassRoom() {
       this.$router.push('/student/classroom/' + this.$route.params.studentId)
+    },
+    goToGrade() {
+      this.$router.push('/student/grade/' + this.$route.params.studentId)
     },
     onClick:function() {
       let _this = this

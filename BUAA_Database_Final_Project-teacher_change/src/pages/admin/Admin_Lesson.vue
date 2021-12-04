@@ -209,6 +209,11 @@
       />
 
       <q-input
+        v-model="newPlace"
+        label="课程地点"
+      />
+
+      <q-input
         type="number"
         v-model="newSum"
         label="课程容量"
@@ -277,6 +282,11 @@
       />
 
       <q-input
+        v-model="oldPlace"
+        label="课程地点"
+      />
+
+      <q-input
         type="number"
         v-model="oldSum"
         label="课程容量"
@@ -327,6 +337,7 @@ const columns = [
   { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
   { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
   { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
+  { name: 'place', align: 'center', label: '上课地点', field: 'place', sortable: true },
   { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
   { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
   { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
@@ -351,6 +362,7 @@ export default({
       newExam: '',
       newTeacher: '',
       newTime: '',
+      newPlace: '',
       oldId: '',
       oldClass: '',
       oldType: '',
@@ -359,6 +371,7 @@ export default({
       oldExam: '',
       oldTeacher: '',
       oldTime: '',
+      oldPlace: '',
       columns,
       rows_selected,
       selected: ref([]),
@@ -414,7 +427,7 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/lesson/deleteInfo/',
+            url: 'http://localhost:8000/admin/lesson/',
             data: {
                 "id": c_id,
                 "operation": "deleteLessonInfo"
@@ -449,13 +462,14 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/addInfo/",
+          url: "http://localhost:8000/admin/lesson/",
           data: {
             "id": this.newId,		// 课程 id
             "name": this.newClass,		// 课程名称
             "type": this.newType,		// 课程类型
             "credit": this.newCredit,	// 学分
             "time": this.newTime,		// 上课时间
+            "place": this.newPlace, // 上课地点
             "capacity": this.newSum,	// 课程容量
             "exam": this.newExam,		// 考核形式
             "teacher": this.newTeacher,	// 授课教师
@@ -489,13 +503,14 @@ let _this = this
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/changeInfo/",
+          url: "http://localhost:8000/admin/lesson/",
           data: {
             "id": this.oldId,		// 课程 id
             "name": this.oldClass,		// 课程名称
             "type": this.oldType,		// 课程类型
             "credit": this.oldCredit,	// 学分
             "time": this.oldTime,		// 上课时间
+            "place": this.oldPlace, // 上课地点
             "capacity": this.oldSum,	// 课程容量
             "exam": this.oldExam,		// 考核形式
             "teacher": this.oldTeacher,	// 授课教师
@@ -523,7 +538,7 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/getInfo/',
+        url: 'http://localhost:8000/admin/lesson/',
         params: {
             "operation": "getLessonInfo"
         }

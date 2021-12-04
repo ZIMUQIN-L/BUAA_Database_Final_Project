@@ -150,6 +150,11 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
+          <q-select color="teal" v-model="spareBuilding" :options="buildings" label="教学楼" style="width: 420px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
           <q-select color="teal" v-model="spareWeek" :options="weeks" label="星期" style="width: 420px">
         <template v-slot:prepend>
           <q-icon name="event" />
@@ -195,12 +200,17 @@
     </q-dialog>
     <h4>
       <div class="q-gutter-md row">
-    <q-select color="teal" v-model="whichClass" :options="classroomId" label="教室编号" style="width: 420px">
+      <q-select color="teal" v-model="whichBuilding" :options="buildings" label="教学楼" style="width: 280px">
         <template v-slot:prepend>
           <q-icon name="event" />
         </template>
       </q-select>
-    <q-select color="teal" v-model="whichWeek" :options="weeks" label="星期" style="width: 420px">
+    <q-select color="teal" v-model="whichClass" :options="classroomId" label="教室编号" style="width: 280px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+    <q-select color="teal" v-model="whichWeek" :options="weeks" label="星期" style="width: 280px">
         <template v-slot:prepend>
           <q-icon name="event" />
         </template>
@@ -255,12 +265,15 @@ export default{
       weeks: [
         "周一", "周二", "周三", "周四", "周五", "周六", "周日" 
       ],
+      buildings: null,
       teacherName: ref(''),
       leftDrawerOpen,
       whichClass:ref(''),
       whichWeek:ref(''),
+      whichBuilding: ref(''),
       spareWeek: ref(''),
       spareTime: ref(''),
+      spareBuilding: ref(''),
       searchSpare: false,
       inputId: null,
       originGrade: null,
@@ -370,6 +383,7 @@ export default{
         }
       }).then(function (response) {
         _this.classroomId = response.data.classroomId;
+        _this.buildings = response.data.buildings;
         _this.allClassRooms = response.data.allClassRooms;
       })
       .catch(function (error) {
@@ -388,6 +402,7 @@ export default{
         params: {
           "classroomId": this.whichClass,
           "week": this.whichWeek,
+          "building": this.whichBuilding,
           "operation": "searchClassRoom",
         }
       }).then(function (response) {
@@ -411,6 +426,7 @@ export default{
         params: {
           "week": this.spareWeek,
           "time": this.spareTime,
+          "building": this.spareBuilding,
           "operation": "searchSpareRoom",
         }
       }).then(function (response) {
