@@ -299,6 +299,9 @@ export default{
     goToClassRoom() {
       this.$router.push('/student/classroom/' + this.$route.params.studentId)
     },
+    goToGrade() {
+      this.$router.push('/student/grade/' + this.$route.params.studentId)
+    },
     checkCourseInfo(){
       let _this = this
       axios({
