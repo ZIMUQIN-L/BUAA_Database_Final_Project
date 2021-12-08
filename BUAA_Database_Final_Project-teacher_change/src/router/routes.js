@@ -61,7 +61,8 @@ const routes = [
       { path: 'admin/sc', component: () => import('src/pages/admin/Admin_Sc.vue') },
       { path: 'admin/class', component: () => import('src/pages/admin/Admin_Class.vue') },
       { path: 'admin/major', component: () => import('src/pages/admin/Admin_Major.vue') },
-      { path: 'admin/teacher', component: () => import('src/pages/admin/Admin_Teacher.vue') }
+      { path: 'admin/teacher', component: () => import('src/pages/admin/Admin_Teacher.vue') },
+      { path: 'admin/arrangeclass', component: () => import('src/pages/admin/Admin_ArrangeClass.vue') }
     ]
   },
 

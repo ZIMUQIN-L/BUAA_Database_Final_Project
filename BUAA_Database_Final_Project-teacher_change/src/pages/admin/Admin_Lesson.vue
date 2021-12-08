@@ -139,6 +139,13 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>课程信息表</b></h5> 
     </div>
+    <div class="q-gutter-md row bg-white">
+        <q-btn rounded label="课程添加" type="submit" color="blue-3" @click="inAddClass = true"  size="17px" style="width: 330px"/>
+    
+        <q-btn rounded label="课程修改" type="submit" color="blue-3" @click="inChangeClass = true" size="17px" style="width: 330px"/>
+
+        <q-btn rounded label="管理员排课" type="submit" color="blue-3" @click="beginArrange" size="17px" style="width: 330px"/>
+    </div>
     <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
@@ -168,55 +175,48 @@
               </template>
             </q-table>
           </div>
-  <div class="col q-pa-sm bg-white">
-    <q-toolbar class="text-primary">
-      <q-toolbar-title>
-        课程添加
-      </q-toolbar-title>
-    </q-toolbar>
-    <q-form
 
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md "
-    >
+  <q-dialog v-model="inAddClass" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">课程添加</div>
+        </q-card-section>
 
-    <div class="q-gutter-md row items-start">
-
+        <q-card-section class="q-pt-none">
       <q-input
         v-model="newId"
         label="课程号"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="newClass"
         label="课程名"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="newType"
         label="课程类型"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="newCredit"
         label="课程学分"
-      />
-
-      <q-input
-        v-model="newTime"
-        label="课程时间"
-      />
-
-      <q-input
-        v-model="newPlace"
-        label="课程地点"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         type="number"
         v-model="newSum"
         label="课程容量"
+        style="width: 400px"
+        outlined
         lazy-rules
         :rules="[
           (val => (val = '' || (val >= 0 && val <= 200))) || '课程容量需小于200'
@@ -226,70 +226,68 @@
       <q-input
         v-model="newExam"
         label="课程考核形式"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         
         v-model="newTeacher"
         label="课程授课教师"
+        style="width: 400px"
+        outlined
       />
+        </q-card-section>
 
-    </div>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="addSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
-      <div class="q-pa-md">
-        <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
-      </div>
-    </q-form>
-  </div>
-  <div class="col q-pa-sm bg-white">
-    <q-toolbar class="text-primary">
-      <q-toolbar-title>
-        课程修改
-      </q-toolbar-title>
-    </q-toolbar>
-    <q-form
 
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md "
-    >
+  <q-dialog v-model="inChangeClass" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">课程添加</div>
+        </q-card-section>
 
-    <div class="q-gutter-md row items-start">
-
+        <q-card-section class="q-pt-none">
       <q-input
         v-model="oldId"
         label="课程号"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="oldClass"
         label="课程名"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="oldType"
         label="课程类型"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         v-model="oldCredit"
         label="课程学分"
-      />
-
-      <q-input
-        v-model="oldTime"
-        label="课程时间"
-      />
-
-      <q-input
-        v-model="oldPlace"
-        label="课程地点"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         type="number"
         v-model="oldSum"
         label="课程容量"
+        style="width: 400px"
+        outlined
         lazy-rules
         :rules="[
           (val => (val = '' || (val >= 0 && val <= 200))) || '课程容量需小于200'
@@ -299,21 +297,96 @@
       <q-input
         v-model="oldExam"
         label="课程考核形式"
+        style="width: 400px"
+        outlined
       />
 
       <q-input
         
         v-model="oldTeacher"
         label="课程授课教师"
+        style="width: 400px"
+        outlined
       />
 
-    </div>
+        </q-card-section>
 
-      <div class="q-pa-md">
-        <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
-      </div>
-    </q-form>
-  </div>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="changeSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  
+
+  <q-dialog v-model="inArrangeClass" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">管理员排课</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div class="text-h7 text-black">课程名称：{{selected[0].name}}</div>
+          <q-select color="teal" v-model="whichBuilding" :options="buildinglist" label="教学楼" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+
+      <q-select color="teal" v-model="whichWeek" :options="weeks" label="星期" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+
+      <q-select color="teal" v-model="whichTime" :options="times" label="时间" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+
+      <!-- <q-select color="teal" v-model="whichClass" :options="classroomlist" label="教室编号" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select> -->
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="getClassRoomList" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="newIncep" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">排课教室选择</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div class="text-h7 text-black">课程名称：{{selected[0].name}}</div>
+          <div class="text-h7 text-black">教学楼：{{whichBuilding}}</div>
+          <div class="text-h7 text-black">星期：{{whichWeek}}</div>
+          <div class="text-h7 text-black">时间：{{whichTime}}</div>
+          
+      <q-select color="teal" v-model="whichClass" :options="classroomlist" label="教室编号" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="arrangeClass" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-page>
 </template>
 
@@ -333,7 +406,6 @@ const columns = [
     sortable: true
   },
   { name: 'id', align: 'center', label: '课程号', field: 'id', sortable: true },
-  { name: 'name', align: 'center', label: '课程名称', field: 'name', sortable: true },
   { name: 'type', align: 'center', label: '类别', field: 'type', sortable: true },
   { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
   { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
@@ -343,9 +415,11 @@ const columns = [
   { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
 ]
 
-var rows_selected = [];
+var rows_selected = [
+  {'name': "hello", 'id': "123"}
+];
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
@@ -354,17 +428,33 @@ export default({
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
+      inAddClass: false,
+      inChangeClass: false,
+      inArrangeClass: false,
       newId: '',
       newClass: '',
+      weeks: [
+        "周一", "周二", "周三", "周四", "周五", "周六", "周日" 
+      ],
+      times: [
+        '第1、2节', '第3、4、5节', '第6、7节', '第8、9、10节'
+      ],
+      whichBuilding: '',
+      whichClass: '',
+      whichTime: '',
+      whichWeek: '',
+      classroomlist: [],
       newType: '',
       newCredit: '',
       newSum: '',
+      buildinglist: [],
       newExam: '',
       newTeacher: '',
       newTime: '',
       newPlace: '',
       oldId: '',
       oldClass: '',
+      newIncep: false,
       oldType: '',
       oldCredit: '',
       oldSum: '',
@@ -380,6 +470,7 @@ export default({
 
   created() {
     this.checkCourseInfo()
+    this.getBuildingList()
   },
 
   methods:{
@@ -406,6 +497,16 @@ export default({
       },
     goToInfo() {
       this.$router.push('/admin/student/')
+    },
+    beginArrange() {
+      if (this.selected.length == 0) {
+        this.$q.notify({
+          type: 'negative',
+          message: '请选择需要排课的课程'
+        })
+        return;
+      }
+      this.inArrangeClass = true;
     },
     deleteSelectedCourse(){
       // console.log(this.studentId);
@@ -482,6 +583,7 @@ let _this = this
               this.$q.notify({
           message: '课程已经添加！',
           color: 'green-4'})
+              this.inAddClass = false;
             })
             .catch(function (error) {
               // handle error
@@ -534,8 +636,9 @@ let _this = this
         
       })
     },
+
     checkCourseInfo(){
-let _this = this
+      let _this = this
       axios({
         method: 'GET',
         url: 'http://localhost:8000/admin/lesson/',
@@ -557,8 +660,91 @@ let _this = this
         });
     console.log("hahaha");
     },
+    getBuildingList() {
+      let _this = this
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/admin/lesson/getbuildinglist',
+        params: {
+            "operation": "getBuildingList"
+        }
+      }).then(function (response) {
+          // console.log(response);
+          // handle success
+          _this.buildinglist = response.data.buildinglist;
+//           console.log(rows_selected);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+      console.log("okokok");
+    },
+    getClassRoomList() {
+        console.log("haaa");
+        let _this = this
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/admin/lesson/getclassroomlist',
+        params: {
+            "building": this.whichBuilding,
+            "week": this.whichWeek,
+            "time": this.whichTime,
+            "operation": "getClassRoomList"
+        }
+      }).then(function (response) {
+          // console.log(response);
+          // handle success
+          _this.classroomlist = response.data.classroomlist;
+//           console.log(rows_selected);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+      console.log("okokok");
+      this.newIncep = true;
+    },
+    arrangeClass() {
+      console.log("haaa");
+      let _this = this
+      axios({
+        method: 'GET',
+        url: 'http://localhost:8000/admin/lesson/getarrangeclass',
+        params: {
+            "building": this.whichBuilding,
+            "week": this.whichWeek,
+            "time": this.whichTime,
+            "classroom": this.whichClass,
+            "operation": "getArrangeClass"
+        }
+      }).then(function (response) {
+          // console.log(response);
+          // handle success
+          _this.rows_selected = response.data.data.courseInfo;
+//           console.log(rows_selected);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+      console.log("okokok");
+      this.whichClass = ''
+      this.whichBuilding = ''
+      this.whichTime = ''
+      this.whichWeek = ''
+    }
   }
-})
+}
 </script>
 
 <style>
