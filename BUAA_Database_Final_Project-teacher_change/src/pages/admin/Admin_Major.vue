@@ -139,42 +139,62 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>专业信息表</b></h5> 
     </div>
-    <div class="col q-pa-sm bg-white">
-            <q-table
-              class="my-sticky-header-table"
-              :rows="rows_selected"
-              :columns="columns"
-              row-key="id"
-              :filter="filter"
-              :loading="loading"
-              v-model:selected="selected"
-              selection="single"
-            >
-            <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询专业">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </template>
-            <template v-slot:top-right>
-                <q-btn
-                  color="white"
-                  text-color="black"
-                  icon-right="delete"
-                  no-caps
-                  @click="deleteSelectedCourse"
-                />
-              </template>
-            </q-table>
-          </div>
-  <div class="col q-pa-sm bg-white">
-    <q-toolbar class="text-primary">
+    <!-- <q-toolbar class="text-primary">
       <q-toolbar-title>
         专业添加
       </q-toolbar-title>
-    </q-toolbar>
-    <q-form
+    </q-toolbar> -->
+        <q-dialog v-model="addMajor" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">专业添加</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+        v-model="newId"
+        label="院系号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="newName"
+        label="院系名称"
+      />
+
+      <q-input
+        v-model="newNum"
+        label="院系人数"
+      />
+
+      <q-input
+        v-model="newChief"
+        label="系主任工号"
+      />
+
+      <q-input
+        v-model="newEmail"
+        label="院系邮箱"
+      />
+
+      <q-input
+        v-model="newCredit"
+        label="学分要求"
+      />
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="addSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div class="row q-pa-sm bg-white"> 
+    <q-btn-group>
+    <q-btn rounded label="专业添加" type="submit" color="blue-3" @click="addMajor = true"  icon = "add" size="17px" style="width: 330px"/>
+
+    <!-- <q-form
 
       @submit="onSubmit"
       @reset="onReset"
@@ -218,10 +238,91 @@
       <div class="q-pa-md">
         <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
       </div>
-    </q-form>
-  </div>
-  <div class="col q-pa-sm bg-white">
-    <q-toolbar class="text-primary">
+    </q-form> -->
+  <!-- </div>
+  <div class="col q-pa-sm bg-white"> -->
+    <q-btn right rounded label="专业修改" type="submit" color="blue-4" @click="changeMajor = true"  icon = "update" size="17px" style="width: 330px"/>
+      </q-btn-group>
+    </div>
+    <q-dialog v-model="changeMajor" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">专业修改</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+         <q-input
+        v-model="oldId"
+        label="院系号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="oldName"
+        label="院系名称"
+      />
+
+      <q-input
+        v-model="oldNum"
+        label="院系人数"
+      />
+
+      <q-input
+        v-model="oldChief"
+        label="系主任工号"
+      />
+
+      <q-input
+        v-model="oldEmail"
+        label="院系邮箱"
+      />
+
+      <q-input
+        v-model="oldCredit"
+        label="学分要求"
+      />
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="changeSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+        <div class="col q-pa-sm bg-white">
+            <q-table
+              class="my-sticky-header-table"
+              :rows="rows_selected"
+              :columns="columns"
+              row-key="id"
+              :filter="filter"
+              :loading="loading"
+              v-model:selected="selected"
+              selection="single"
+            >
+            <template v-slot:top-left>
+              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询专业">
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
+            </template>
+            <template v-slot:top-right>
+                <q-btn
+                  color="white"
+                  text-color="black"
+                  icon-right="delete"
+                  no-caps
+                  @click="deleteSelectedCourse"
+                />
+              </template>
+            </q-table>
+          </div>
+  <div class="row q-pa-bg bg-white">
+
+    <!-- <q-toolbar class="text-primary">
       <q-toolbar-title>
         专业修改
       </q-toolbar-title>
@@ -269,7 +370,7 @@
       <div class="q-pa-md">
         <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
       </div>
-    </q-form>
+    </q-form> -->
   </div>
   </q-page>
 </template>
@@ -290,7 +391,7 @@ const columns = [
 
 var rows_selected = [];
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
@@ -300,6 +401,8 @@ export default({
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       newId: '',
+      addMajor: false,
+      changeMajor: false,
       newName: '',
       newNum: '',
       newChief: '',
@@ -489,7 +592,7 @@ let _this = this
     console.log("hahaha");
     },
   }
-})
+}
 </script>
 
 <style>

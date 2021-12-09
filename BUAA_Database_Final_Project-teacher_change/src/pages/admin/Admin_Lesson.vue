@@ -139,12 +139,14 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>课程信息表</b></h5> 
     </div>
-    <div class="q-gutter-md row bg-white">
-        <q-btn rounded label="课程添加" type="submit" color="blue-3" @click="inAddClass = true"  size="17px" style="width: 330px"/>
+    <div class="q-pa-sm row bg-white">
+      <q-btn-group>
+        <q-btn rounded label="课程添加" type="submit" color="blue-3" icon = "add" @click="inAddClass = true"  size="17px" style="width: 350px"/>
     
-        <q-btn rounded label="课程修改" type="submit" color="blue-3" @click="inChangeClass = true" size="17px" style="width: 330px"/>
+        <q-btn rounded label="课程修改" type="submit" color="blue-4" icon = "update" @click="inChangeClass = true" size="17px" style="width: 350px"/>
 
-        <q-btn rounded label="管理员排课" type="submit" color="blue-3" @click="beginArrange" size="17px" style="width: 330px"/>
+        <q-btn rounded label="管理员排课" type="submit" color="blue-5" icon = "assignment" @click="beginArrange" size="17px" style="width: 350px"/>
+      </q-btn-group>
     </div>
     <div class="col q-pa-sm bg-white">
             <q-table

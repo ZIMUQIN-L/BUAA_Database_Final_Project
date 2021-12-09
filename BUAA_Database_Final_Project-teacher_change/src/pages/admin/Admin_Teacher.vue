@@ -139,6 +139,125 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>教师信息表</b></h5> 
     </div>
+     <div class="row q-pa-sm bg-white"> 
+    <q-btn-group>
+    <q-btn rounded label="教师信息添加" type="submit" color="blue-3" @click="inAddTeacher = true"  icon = "add" size="17px" style="width: 330px"/>
+    <q-btn rounded label="教师信息修改" type="submit" color="blue-4" @click="inChangeTeacher = true"  icon = "update" size="17px" style="width: 330px"/>
+    </q-btn-group>
+    </div>
+
+    <q-dialog v-model="inAddTeacher" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">教师信息添加</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+   <q-input
+        v-model="newId"
+        label="学号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="newName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="newPhone"
+        label="联系电话"
+      />
+
+      <q-input
+        v-model="newMail"
+        label="电子邮箱"
+      />
+
+      <q-input
+        v-model="newIdNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="newPosition"
+        label="职称"
+      />
+
+      <q-input
+        v-model="newMajor"
+        label="院系系号"
+      />
+
+      <q-input
+        v-model="newPassword"
+        label="登录密码"
+      />
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="addSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+     <q-dialog v-model="inChangeTeacher" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">教师信息修改</div>
+        </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <q-input
+        v-model="oldId"
+        label="学号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="oldName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="oldPhone"
+        label="联系电话"
+      />
+
+      <q-input
+        v-model="oldMail"
+        label="电子邮箱"
+      />
+
+      <q-input
+        v-model="oldIdNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="oldPosition"
+        label="职称"
+      />
+
+      <q-input
+        v-model="oldMajor"
+        label="院系系号"
+      />
+
+      <q-input
+        v-model="oldPassword"
+        label="登录密码"
+      />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="changeSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
@@ -168,7 +287,7 @@
               </template>
             </q-table>
           </div>
-  <div class="col q-pa-sm bg-white">
+  <!-- <div class="col q-pa-sm bg-white">
     <q-toolbar class="text-primary">
       <q-toolbar-title>
         教师添加
@@ -229,8 +348,8 @@
         <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
       </div>
     </q-form>
-  </div>
-  <div class="col q-pa-sm bg-white">
+  </div> -->
+  <!-- <div class="col q-pa-sm bg-white">
     <q-toolbar class="text-primary">
       <q-toolbar-title>
         教师修改
@@ -291,7 +410,7 @@
         <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
       </div>
     </q-form>
-  </div>
+  </div> -->
   </q-page>
 </template>
 
@@ -313,7 +432,7 @@ const columns = [
 
 var rows_selected = [];
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
@@ -322,6 +441,8 @@ export default({
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
+      inAddTeacher: false,
+      inChangeTeacher: false,
       newId: '',
       newName: '',
       newPassword: '',
@@ -522,7 +643,7 @@ let _this = this
     console.log("hahaha");
     },
   }
-})
+}
 </script>
 
 <style>

@@ -139,6 +139,157 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>学生信息表</b></h5> 
     </div>
+    <div class="row q-pa-sm bg-white"> 
+    <q-btn-group>
+    <q-btn rounded label="学生信息添加" type="submit" color="blue-3" @click="inAddStudent = true"  icon = "add" size="17px" style="width: 330px"/>
+    <q-btn rounded label="学生信息修改" type="submit" color="blue-4" @click="inChangeStudent = true"  icon = "update" size="17px" style="width: 330px"/>
+    </q-btn-group>
+    </div>
+
+        <q-dialog v-model="inAddStudent" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">学生信息添加</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+         <q-input
+        v-model="newId"
+        label="学号"
+        style="width: 500px"
+      />
+
+      <q-input
+        v-model="newName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="newGender"
+        label="性别"
+      />
+
+      <q-input
+        v-model="newBirthDate"
+        label="出生日期"
+      />
+
+      <q-input
+        v-model="newGPA"
+        label="绩点"
+      />
+
+      <q-input
+        v-model="newNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="newClassNumber"
+        label="班号"
+      />
+
+      <q-input
+        v-model="newMajorNumber"
+        label="系号"
+      />
+
+      <q-input
+        v-model="newPassword"
+        label="登录密码"
+      />
+
+      <q-input
+        v-model="newTel"
+        label="联系电话"
+      />
+
+      <q-input
+        v-model="newMail"
+        label="电子邮箱"
+      />
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="addSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="inChangeStudent" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">学生信息修改</div>
+        </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <q-input
+        v-model="oldId"
+        label="学号"
+        style="width: 500px"
+      />
+
+      <q-input
+        v-model="oldName"
+        label="姓名"
+      />
+
+      <q-input
+        v-model="oldGender"
+        label="性别"
+      />
+
+      <q-input
+        v-model="oldBirthDate"
+        label="出生日期"
+      />
+
+      <q-input
+        v-model="oldGPA"
+        label="绩点"
+      />
+
+      <q-input
+        v-model="oldNumber"
+        label="身份证号"
+      />
+
+      <q-input
+        v-model="oldClassNumber"
+        label="班号"
+      />
+
+      <q-input
+        v-model="oldMajorNumber"
+        label="系号"
+      />
+
+      <q-input
+        v-model="oldPassword"
+        label="登录密码"
+      />
+
+      <q-input
+        v-model="oldTel"
+        label="联系电话"
+      />
+
+      <q-input
+        v-model="newMail"
+        label="电子邮箱"
+      />
+
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="changeSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
@@ -168,7 +319,7 @@
               </template>
             </q-table>
           </div>
-  <div class="col q-pa-sm bg-white">
+  <!-- <div class="col q-pa-sm bg-white">
     <q-toolbar class="text-primary">
       <q-toolbar-title>
         学生添加
@@ -323,7 +474,7 @@
         <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
       </div>
     </q-form>
-  </div>
+  </div> -->
   </q-page>
 </template>
 
@@ -348,7 +499,7 @@ const columns = [
 
 var rows_selected = [];
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
@@ -357,6 +508,8 @@ export default({
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
+      inAddStudent: false,
+      inChangeStudent: false,
       newId: '',
       newName: '',
       newGender: '',
@@ -569,7 +722,7 @@ let _this = this
     console.log("hahaha");
     },
   }
-})
+}
 </script>
 
 <style>

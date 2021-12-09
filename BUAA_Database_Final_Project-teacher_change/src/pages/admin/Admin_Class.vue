@@ -139,6 +139,88 @@
     <div class="q-pa-sm bg-grey-3">
       <h5 align = "center"><b>班级信息表</b></h5> 
     </div>
+    <div class="row q-pa-sm bg-white"> 
+    <q-btn-group>
+    <q-btn rounded label="班级添加" type="submit" color="blue-3" @click="inAddClass = true"  icon = "add" size="17px" style="width: 330px"/>
+    <q-btn rounded label="班级修改" type="submit" color="blue-4" @click="inChangeClass = true"  icon = "update" size="17px" style="width: 330px"/>
+    </q-btn-group>
+    </div>
+
+    <q-dialog v-model="inAddClass" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">班级添加</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+         <q-input
+        v-model="newId"
+        label="班号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="newMajor"
+        label="系号"
+      />
+
+      <q-input
+        v-model="newCap"
+        label="班级人数"
+      />
+
+      <q-input
+        v-model="newTeacherId"
+        label="负责教师工号"
+      />
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="addSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="inChangeClass" transition-show="flip-down" transition-hide="flip-up">
+      <q-card class="bg-blue-1 text-white">
+        <q-card-section>
+          <div class="text-h6 text-black">班级修改</div>
+        </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <q-input
+        v-model="oldId"
+        label="班号"
+        style="width: 400px"
+      />
+
+      <q-input
+        v-model="oldMajor"
+        label="系号"
+      />
+
+      <q-input
+        v-model="oldCap"
+        label="班级人数"
+      />
+
+      <q-input
+        v-model="oldTeacherId"
+        label="教师工号"
+      />
+    
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="确认" @click="changeSelectedCourse" v-close-popup/>
+          <q-btn flat label="取消" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <div class="col q-pa-sm bg-white">
             <q-table
               class="my-sticky-header-table"
@@ -168,7 +250,7 @@
               </template>
             </q-table>
           </div>
-  <div class="col q-pa-sm bg-white">
+  <!-- <div class="col q-pa-sm bg-white">
     <q-toolbar class="text-primary">
       <q-toolbar-title>
         班级添加
@@ -209,8 +291,8 @@
         <q-btn label="提交" type="submit" color="primary" @click="addSelectedCourse"/>
       </div>
     </q-form>
-  </div>
-  <div class="col q-pa-sm bg-white">
+  </div> -->
+  <!-- <div class="col q-pa-sm bg-white">
     <q-toolbar class="text-primary">
       <q-toolbar-title>
         班级修改
@@ -250,7 +332,7 @@
         <q-btn label="提交" type="submit" color="primary" @click="changeSelectedCourse"/>
       </div>
     </q-form>
-  </div>
+  </div> -->
   </q-page>
 </template>
 
@@ -269,7 +351,7 @@ const columns = [
 
 var rows_selected = [];
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
@@ -287,6 +369,8 @@ export default({
       oldTeacherId: '',
       oldCap: '',
       columns,
+      inAddClass: false,
+      inChangeClass: false,
       rows_selected,
       selected: ref([]),
     }
@@ -467,7 +551,7 @@ let _this = this
     console.log("hahaha");
     },
   }
-})
+}
 </script>
 
 <style>
