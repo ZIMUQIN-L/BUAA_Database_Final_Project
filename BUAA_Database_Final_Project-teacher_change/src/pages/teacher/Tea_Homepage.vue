@@ -149,7 +149,64 @@
       />
     </q-header>
   <q-page class="flex flex-center">
-    <h5 class="absolute-top-left q-pa-lg"> 教师--主页 </h5>
+      <div class="text-h6 text-black">
+       <q-carousel
+        v-model="slide"
+        transition-prev="scale"
+        transition-next="scale"
+        swipeable
+        animated
+        control-color="white"
+        navigation
+        padding
+        arrows
+        height="200px"
+        style="width: 1000px"
+        class="bg-primary text-white shadow-1 rounded-borders"
+      >
+        <q-carousel-slide name="hello" class="column no-wrap flex-center">
+          <div class="q-mt-md text-center text-h5 text-white">
+            {{ hello }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="style" class="column no-wrap flex-center">
+          <q-icon name="school" size="80px" @click="goToLesson"/>
+          <div class="q-mt-md text-center">
+            {{ lorem1 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="tv" class="column no-wrap flex-center">
+          <q-icon name="import_contacts" size="80px" @click="goToInfo"/>
+          <div class="q-mt-md text-center">
+            {{ lorem2 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="layers" class="column no-wrap flex-center">
+          <q-icon name="attachment" size="80px" @click="goToDepart"/>
+          <div class="q-mt-md text-center">
+            {{ lorem3 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="map" class="column no-wrap flex-center">
+          <q-icon name="laptop_chromebook" size="80px" @click="goToCourseInfo"/>
+          <div class="q-mt-md text-center">
+            {{ lorem4 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="stu" class="column no-wrap flex-center">
+          <q-icon name="house" size="80px" @click="goToClassRoom" />
+          <div class="q-mt-md text-center">
+            {{ lorem5 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="choose" class="column no-wrap flex-center">
+          <q-icon name="settings" size="80px" @click="goToSettings"/>
+          <div class="q-mt-md text-center">
+            {{ lorem6 }}
+          </div>
+        </q-carousel-slide>
+      </q-carousel>
+      </div>
     <img
       alt="BUAA logo"
       src="../../statics/logo_big.png"
@@ -164,12 +221,20 @@ import axios from 'axios'
 axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
     return {
       leftDrawerOpen,
+      slide: 'hello',
+      hello: '欢迎进入教务管理系统！',
+      lorem1: '课程界面',
+      lorem2: '个人信息界面',
+      lorem3: '院系界面',
+      lorem4: '学生选课与成绩界面',
+      lorem5: '教室信息界面',
+      lorem6: '设置界面',
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
@@ -225,7 +290,7 @@ axios({
       this.$router.push('/teacher/depart/' + this.$route.params.teacherId)
     }
   }
-})
+}
 </script>
 
 <style>

@@ -151,6 +151,11 @@
         style="width: 1000px"
         class="bg-primary text-white shadow-1 rounded-borders"
       >
+        <q-carousel-slide name="hello" class="column no-wrap flex-center">
+          <div class="q-mt-md text-center text-h5 text-white">
+            {{ hello }}
+          </div>
+        </q-carousel-slide>
         <q-carousel-slide name="style" class="column no-wrap flex-center">
           <q-icon name="square_foot" size="80px" @click="goToMajor"/>
           <div class="q-mt-md text-center">
@@ -158,29 +163,38 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="tv" class="column no-wrap flex-center">
-          <q-icon name="live_tv" size="56px" />
+          <q-icon name="groups" size="80px" @click="goToClass"/>
           <div class="q-mt-md text-center">
             {{ lorem2 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="layers" class="column no-wrap flex-center">
-          <q-icon name="layers" size="56px" />
+          <q-icon name="psychology" size="80px" @click="goToTeacher"/>
           <div class="q-mt-md text-center">
             {{ lorem3 }}
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="map" class="column no-wrap flex-center">
-          <q-icon name="terrain" size="56px" />
+          <q-icon name="import_contacts" size="80px" @click="goToLesson"/>
           <div class="q-mt-md text-center">
             {{ lorem4 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="stu" class="column no-wrap flex-center">
+          <q-icon name="school" size="80px" @click="goToInfo" />
+          <div class="q-mt-md text-center">
+            {{ lorem5 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="choose" class="column no-wrap flex-center">
+          <q-icon name="check_circle" size="80px" @click="goToSettings"/>
+          <div class="q-mt-md text-center">
+            {{ lorem6 }}
           </div>
         </q-carousel-slide>
       </q-carousel>
       </div>
       <div>
-      <div class="text-black">
-      <h4 class="center q-sm-sm" color="grey-3"><b>欢迎进入教务系统!</b></h4> 
-      </div>
     <img
       alt="BUAA logo"
       src="../../statics/logo_big.png"
@@ -202,8 +216,14 @@ export default{
 
     return {
       leftDrawerOpen,
-      slide: 'style',
+      slide: 'hello',
+      hello: '欢迎进入教务管理系统！',
       lorem1: '院系信息界面',
+      lorem2: '班级信息界面',
+      lorem3: '教师信息界面',
+      lorem4: '课程信息界面',
+      lorem5: '学生信息界面',
+      lorem6: '学生选课界面',
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
@@ -213,7 +233,7 @@ export default{
   created() {
   },
 
-  methods:{
+  methods:{
     logout:function() {
        axios({
             method: 'POST',
