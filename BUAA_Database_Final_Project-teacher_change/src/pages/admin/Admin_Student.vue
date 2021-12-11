@@ -31,7 +31,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -174,10 +174,10 @@
         label="出生日期"
       />
 
-      <q-input
+      <!-- <q-input
         v-model="newGPA"
         label="绩点"
-      />
+      /> -->
 
       <q-input
         v-model="newNumber"
@@ -245,11 +245,11 @@
         v-model="oldBirthDate"
         label="出生日期"
       />
-
+<!-- 
       <q-input
         v-model="oldGPA"
         label="绩点"
-      />
+      /> -->
 
       <q-input
         v-model="oldNumber"
@@ -481,6 +481,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -544,6 +545,23 @@ export default{
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -641,7 +659,7 @@ let _this = this
               // handle success
               console.log(response);
               _this.rows_selected = response.data.data.studentInfo;
-              this.$q.notify({
+              _this.$q.notify({
           message: '课程已经添加！',
           color: 'green-4'})
             })
@@ -684,7 +702,7 @@ let _this = this
               // handle success
               console.log(response);
               _this.rows_selected = response.data.data.studentInfo;
-              this.$q.notify({
+              _this.$q.notify({
           message: '课程已经添加！',
           color: 'green-4'})
             })

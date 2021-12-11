@@ -31,7 +31,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -185,12 +185,12 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-      <q-input
+      <!-- <q-input
         v-model="newId"
         label="课程号"
         style="width: 400px"
         outlined
-      />
+      /> -->
 
       <q-input
         v-model="newClass"
@@ -347,6 +347,12 @@
         </template>
       </q-select>
 
+      <q-select color="teal" v-model="whichType" :options="roomtype" label="教室类型" style="width: 500px">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
+
       <!-- <q-select color="teal" v-model="whichClass" :options="classroomlist" label="教室编号" style="width: 500px">
         <template v-slot:prepend>
           <q-icon name="event" />
@@ -373,6 +379,7 @@
           <div class="text-h7 text-black">教学楼：{{whichBuilding}}</div>
           <div class="text-h7 text-black">星期：{{whichWeek}}</div>
           <div class="text-h7 text-black">时间：{{whichTime}}</div>
+          <div class="text-h7 text-black">教室类型：{{whichType}}</div>
           
       <q-select color="teal" v-model="whichClass" :options="classroomlist" label="教室编号" style="width: 500px">
         <template v-slot:prepend>
@@ -395,6 +402,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -413,6 +421,7 @@ const columns = [
   { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
   { name: 'place', align: 'center', label: '上课地点', field: 'place', sortable: true },
   { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
+  { name: 'nowSum', align: 'center', label: '当前选课人数', field: 'nowSum', sortable: true },
   { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
   { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
 ]
@@ -441,10 +450,14 @@ export default{
       times: [
         '第1、2节', '第3、4、5节', '第6、7节', '第8、9、10节'
       ],
+      roomtype: [
+        "机房", "实验室", "教室"
+      ],
       whichBuilding: '',
       whichClass: '',
       whichTime: '',
       whichWeek: '',
+      whichType: '',
       classroomlist: [],
       newType: '',
       newCredit: '',
@@ -477,6 +490,23 @@ export default{
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -527,10 +557,10 @@ export default{
           c_id = item.id;
 return item;
         });
-let _this = this;
+          let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/admin/lesson/',
+            url: 'http://localhost:8000/admin/lesson/delInfo/',
             data: {
                 "id": c_id,
                 "operation": "deleteLessonInfo"
@@ -538,6 +568,18 @@ let _this = this;
           }).then(function (response) {
               // handle success
               console.log(response);
+              if (response.data.status == 0) {
+              _this.$q.notify({
+                message: '课程已经删除！',
+                color: "green-4"
+              })
+              }
+              else {
+                _this.$q.notify({
+                type: 'negative',
+                message: '该课程已经结束，无法进行取消该课程'
+              })
+          }
               _this.rows_selected = response.data.data.courseInfo;
             })
             .catch(function (error) {
@@ -549,8 +591,8 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '课程已经删除！',
-color: "green-4"})
+//         this.$q.notify({message: '课程已经删除！',
+// color: "green-4"})
       }
       )
       
@@ -565,7 +607,7 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/",
+          url: "http://localhost:8000/admin/lesson/addInfo/",
           data: {
             "id": this.newId,		// 课程 id
             "name": this.newClass,		// 课程名称
@@ -576,7 +618,7 @@ let _this = this
             "capacity": this.newSum,	// 课程容量
             "exam": this.newExam,		// 考核形式
             "teacher": this.newTeacher,	// 授课教师
-              "operation": "addLessonInfo"
+            "operation": "addLessonInfo"
           }
         }).then(function (response) {
               // handle success
@@ -607,7 +649,7 @@ let _this = this
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/admin/lesson/",
+          url: "http://localhost:8000/admin/lesson/changeInfo/",
           data: {
             "id": this.oldId,		// 课程 id
             "name": this.oldClass,		// 课程名称
@@ -618,7 +660,7 @@ let _this = this
             "capacity": this.oldSum,	// 课程容量
             "exam": this.oldExam,		// 考核形式
             "teacher": this.oldTeacher,	// 授课教师
-              "operation": "changeLessonInfo"
+            "operation": "changeLessonInfo"
           }
         }).then(function (response) {
               // handle success
@@ -643,7 +685,7 @@ let _this = this
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/',
+        url: 'http://localhost:8000/admin/lesson/getInfo/',
         params: {
             "operation": "getLessonInfo"
         }
@@ -666,7 +708,7 @@ let _this = this
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/getbuildinglist',
+        url: 'http://localhost:8000/admin/lesson/getbuildinglist/',
         params: {
             "operation": "getBuildingList"
         }
@@ -690,11 +732,13 @@ let _this = this
         let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/getclassroomlist',
+        url: 'http://localhost:8000/admin/lesson/getclassroomlist/',
         params: {
             "building": this.whichBuilding,
             "week": this.whichWeek,
             "time": this.whichTime,
+            "type": this.whichType,
+            "courseId": this.selected[0].id,
             "operation": "getClassRoomList"
         }
       }).then(function (response) {
@@ -718,12 +762,13 @@ let _this = this
       let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/admin/lesson/getarrangeclass',
+        url: 'http://localhost:8000/admin/lesson/getarrangeclass/',
         params: {
             "building": this.whichBuilding,
             "week": this.whichWeek,
             "time": this.whichTime,
             "classroom": this.whichClass,
+            "courseId": this.selected[0].id,
             "operation": "getArrangeClass"
         }
       }).then(function (response) {
@@ -744,6 +789,7 @@ let _this = this
       this.whichBuilding = ''
       this.whichTime = ''
       this.whichWeek = ''
+      this.whichType = ''
     }
   }
 }

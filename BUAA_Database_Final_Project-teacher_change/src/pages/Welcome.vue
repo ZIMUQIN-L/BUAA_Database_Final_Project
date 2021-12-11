@@ -46,7 +46,10 @@
 </template>
 
 <script>
-
+import { ref } from 'vue'
+import axios from 'axios'
+axios.defaults.withCredentials = true;
+import VueAxios from 'vue-axios';
 export default {
 
   data () {
@@ -58,7 +61,35 @@ export default {
       ]
     }
   },
-
+  created() {
+      let _this = this;
+      console.log("kk");
+          axios({
+            method: 'POST',
+            url: 'http://localhost:8000/welcome/getin/',
+            data: {
+                "operation": "getin"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+              if (response.data.status == 0) {
+                if (response.data.identity == "admin") {
+                  _this.$router.push('/admin/homepage/');
+                }
+                else {
+                  _this.$router.push('/'+ response.data.identity + '/homepage/' + response.data.userId);
+                }
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
+    },
   methods :{
     onClick:function() {
       if (this.identity == '学生') {

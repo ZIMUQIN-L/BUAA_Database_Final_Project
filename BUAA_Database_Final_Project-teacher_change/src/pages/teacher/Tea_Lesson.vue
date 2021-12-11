@@ -322,6 +322,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 //import VueAxios from 'vue-axios';
 var tasks = [];
 export default {
@@ -341,10 +342,14 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
+        { name: 'id', align: 'center', label: '课程号', field: 'id', sortable: true },
         {name: 'courseType', align: 'center', label: '课程类型', field: 'courseType', sortable: true },
+        {name: 'nowSum', align: 'center', label: '当前选课人数', field: 'nowSum', sortable: true },
         {name: 'courseSum', label: '课程容量', field: 'courseSum', sortable: true },
         {name: 'courseExam', label: '考核形式', field: 'courseExam', sortable: true },
         {name: 'courseCredit', label: '学分', field: 'courseCredit', sortable: true },
+        { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
+        { name: 'place', align: 'center', label: '上课地点', field: 'place', sortable: true }
         //{name: 'courseTime', label: '上课时间', field: 'courseTime', sortable: true }
       ],
       teacherCourse: [
@@ -385,6 +390,23 @@ export default {
   },
   methods: {
     logout:function() {
+axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -436,28 +458,43 @@ export default {
         return;
       }
       else {
+        console.log(c_name[0]);
         var decourse = []
-        decourse = this.teacherCourse.splice(this.teacherCourse.indexOf(c_name[0]), 1)
+        //decourse = this.teacherCourse.splice(this.teacherCourse.indexOf(c_name[0]), 1)
+        let _this = this
         axios({
           method: 'POST',
           url:'http://localhost:8000/teacher/lesson/delete/',
           data:{
             "userId": this.teacherId,
-            "courseName": decourse[0].courseName,
+            "courseName": c_name[0].courseName,
             "operation": "delete"
           }
         })
         .then(response => {
+          if (response.data.status == 0) {
+            decourse = _this.teacherCourse.splice(this.teacherCourse.indexOf(c_name[0]), 1)
+            _this.$q.notify({
+          message: '课程已经删除！',
+          color: "green-4"
+            })
+          }
+          else {
+            _this.$q.notify({
+                type: 'negative',
+               message: '该课程已经结束，无法进行取消该课程'
+               })
+          }
           console.log(response)
         }, error=> {
           console.log('错误',error.message)
         })
       }
       this.selected = [];
-        this.$q.notify({
-          message: '课程已经删除！',
-          color: "green-4"
-        })
+        // this.$q.notify({
+        //   message: '课程已经删除！',
+        //   color: "green-4"
+        // })
       })
     },
     // deleteTask(index) {
@@ -491,14 +528,15 @@ export default {
     addClass() {
       if (this.newClass !== '' && this.newSum !== '' 
         && this.newType != '' && this.newExam != '' && this.newCredit != '') {
-        this.teacherCourse.push({
-          courseName: this.newClass,
-          courseType: this.newType,
-          courseSum: this.newSum,
-          courseExam: this.newExam,
-          courseCredit: this.newCredit,
-          // courseTime: this.newTime
-        })
+        // this.teacherCourse.push({
+        //   courseName: this.newClass,
+        //   courseType: this.newType,
+        //   courseSum: this.newSum,
+        //   courseExam: this.newExam,
+        //   courseCredit: this.newCredit,
+        //   // courseTime: this.newTime
+        // })
+      let _this = this
       axios({
         method: 'POST',
         url:'http://localhost:8000/teacher/lesson/add/',
@@ -513,7 +551,9 @@ export default {
         }
       })
       .then(response => {
+        _this.teacherCourse = response.data.data.courseTable;
         //console.log(data)
+
         console.log(response)
       }, error=> {
         //console.log(data)

@@ -32,7 +32,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -137,7 +137,7 @@
     </q-header>
   <q-page class="q-pa-sm">
     <div class="q-pa-sm bg-grey-3">
-      <h5 align = "center"><b>专业信息表</b></h5> 
+      <h5 align = "center"><b>院系信息表</b></h5> 
     </div>
     <!-- <q-toolbar class="text-primary">
       <q-toolbar-title>
@@ -147,7 +147,7 @@
         <q-dialog v-model="addMajor" transition-show="flip-down" transition-hide="flip-up">
       <q-card class="bg-blue-1 text-white">
         <q-card-section>
-          <div class="text-h6 text-black">专业添加</div>
+          <div class="text-h6 text-black">院系添加</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -162,10 +162,10 @@
         label="院系名称"
       />
 
-      <q-input
+      <!-- <q-input
         v-model="newNum"
         label="院系人数"
-      />
+      /> -->
 
       <q-input
         v-model="newChief"
@@ -192,7 +192,7 @@
     </q-dialog>
     <div class="row q-pa-sm bg-white"> 
     <q-btn-group>
-    <q-btn rounded label="专业添加" type="submit" color="blue-3" @click="addMajor = true"  icon = "add" size="17px" style="width: 330px"/>
+    <q-btn rounded label="院系添加" type="submit" color="blue-3" @click="addMajor = true"  icon = "add" size="17px" style="width: 330px"/>
 
     <!-- <q-form
 
@@ -241,13 +241,13 @@
     </q-form> -->
   <!-- </div>
   <div class="col q-pa-sm bg-white"> -->
-    <q-btn right rounded label="专业修改" type="submit" color="blue-4" @click="changeMajor = true"  icon = "update" size="17px" style="width: 330px"/>
+    <q-btn right rounded label="院系修改" type="submit" color="blue-4" @click="changeMajor = true"  icon = "update" size="17px" style="width: 330px"/>
       </q-btn-group>
     </div>
     <q-dialog v-model="changeMajor" transition-show="flip-down" transition-hide="flip-up">
       <q-card class="bg-blue-1 text-white">
         <q-card-section>
-          <div class="text-h6 text-black">专业修改</div>
+          <div class="text-h6 text-black">院系修改</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -262,10 +262,10 @@
         label="院系名称"
       />
 
-      <q-input
+      <!-- <q-input
         v-model="oldNum"
         label="院系人数"
-      />
+      /> -->
 
       <q-input
         v-model="oldChief"
@@ -303,7 +303,7 @@
               selection="single"
             >
             <template v-slot:top-left>
-              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询专业">
+              <q-input bg-color="white" filled borderless dense debounce="300" v-model="filter" placeholder="查询院系">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
@@ -378,12 +378,13 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
   { name: 'id', align: 'center', label: '班号', field: 'id', sortable: true },
-  { name: 'name', align: 'center', label: '专业名称', field: 'name', sortable: true },
-  { name: 'num', align: 'center', label: '专业人数', field: 'num', sortable: true },
+  { name: 'name', align: 'center', label: '院系名称', field: 'name', sortable: true },
+  { name: 'num', align: 'center', label: '院系人数', field: 'num', sortable: true },
   { name: 'chief', align: 'center', label: '系主任工号', field: 'chief', sortable: true },
   { name: 'email', align: 'center', label: '院系邮箱', field: 'email', sortable: true },
   { name: 'credit', align: 'center', label: '学分要求', field: 'credit', sortable: true }
@@ -426,6 +427,23 @@ export default{
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -456,7 +474,7 @@ export default{
       console.log(rows_selected);
       this.$q.dialog({
         title: '确认',
-        message: '是否删除该专业',
+        message: '是否删除该院系',
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -476,6 +494,16 @@ let _this = this;
             }
           }).then(function (response) {
               // handle success
+            if (response.data.status == 1) {
+                _this.$q.notify({
+                type: 'negative',
+               message: '该班级内仍有学生，无法删除该班级'
+               })
+              }
+              else {
+                _this.$q.notify({message: '班级删除成功！',
+                color: "green-4"})
+              }
               console.log(response);
               _this.rows_selected = response.data.data.majorInfo;
             })
@@ -488,8 +516,8 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '专业已经删除！',
-color: "green-4"})
+//         this.$q.notify({message: '专业已经删除！',
+// color: "green-4"})
       }
       )
       
@@ -497,7 +525,7 @@ color: "green-4"})
     addSelectedCourse(){
       this.$q.dialog({
         title: '确认',
-        message: '是否添加该专业',
+        message: '是否添加该院系',
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -518,7 +546,7 @@ let _this = this
               console.log(response);
               _this.rows_selected = response.data.data.majorInfo;
               this.$q.notify({
-          message: '专业已经添加！',
+          message: '院系已经添加！',
           color: 'green-4'})
             })
             .catch(function (error) {
@@ -534,7 +562,7 @@ let _this = this
     changeSelectedCourse(){
       this.$q.dialog({
         title: '确认',
-        message: '是否修改该专业信息',
+        message: '是否修改该院系信息',
         cancel: true,
         persistent: true
       }).onOk(() => {
@@ -555,7 +583,7 @@ let _this = this
               console.log(response);
               _this.rows_selected = response.data.data.majorInfo;
               this.$q.notify({
-          message: '专业已经添加！',
+          message: '院系已经添加！',
           color: 'green-4'})
             })
             .catch(function (error) {

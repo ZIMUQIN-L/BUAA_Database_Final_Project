@@ -32,7 +32,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -136,26 +136,74 @@
       />
     </q-header>
   <q-page class="flex flex-center">
-    <h5 class="absolute-top-left q-pa-lg"> 管理员--主页 </h5>
+      <div class="text-h6 text-black">
+       <q-carousel
+        v-model="slide"
+        transition-prev="scale"
+        transition-next="scale"
+        swipeable
+        animated
+        control-color="white"
+        navigation
+        padding
+        arrows
+        height="200px"
+        style="width: 1000px"
+        class="bg-primary text-white shadow-1 rounded-borders"
+      >
+        <q-carousel-slide name="style" class="column no-wrap flex-center">
+          <q-icon name="square_foot" size="80px" @click="goToMajor"/>
+          <div class="q-mt-md text-center">
+            {{ lorem1 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="tv" class="column no-wrap flex-center">
+          <q-icon name="live_tv" size="56px" />
+          <div class="q-mt-md text-center">
+            {{ lorem2 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="layers" class="column no-wrap flex-center">
+          <q-icon name="layers" size="56px" />
+          <div class="q-mt-md text-center">
+            {{ lorem3 }}
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="map" class="column no-wrap flex-center">
+          <q-icon name="terrain" size="56px" />
+          <div class="q-mt-md text-center">
+            {{ lorem4 }}
+          </div>
+        </q-carousel-slide>
+      </q-carousel>
+      </div>
+      <div>
+      <div class="text-black">
+      <h4 class="center q-sm-sm" color="grey-3"><b>欢迎进入教务系统!</b></h4> 
+      </div>
     <img
       alt="BUAA logo"
       src="../../statics/logo_big.png"
       style="width: 200px; height: 200px"
     >
+      </div>
   </q-page>
 </template>
 
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
-export default({
+export default{
   data () {
     const leftDrawerOpen = ref(false)
 
     return {
       leftDrawerOpen,
+      slide: 'style',
+      lorem1: '院系信息界面',
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
@@ -167,6 +215,23 @@ export default({
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -191,7 +256,7 @@ export default({
       this.$router.push('/admin/student/')
     }
   }
-})
+}
 </script>
 
 <style>

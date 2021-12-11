@@ -212,6 +212,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 export default {

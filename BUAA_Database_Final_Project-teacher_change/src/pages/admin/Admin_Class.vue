@@ -31,7 +31,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -164,10 +164,10 @@
         label="系号"
       />
 
-      <q-input
+      <!-- <q-input
         v-model="newCap"
         label="班级人数"
-      />
+      /> -->
 
       <q-input
         v-model="newTeacherId"
@@ -201,10 +201,10 @@
         label="系号"
       />
 
-      <q-input
+      <!-- <q-input
         v-model="oldCap"
         label="班级人数"
-      />
+      /> -->
 
       <q-input
         v-model="oldTeacherId"
@@ -339,6 +339,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -382,6 +383,23 @@ export default{
 
   methods:{
     logout:function() {
+             axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -434,6 +452,16 @@ let _this = this;
               // handle success
               console.log(response);
               _this.rows_selected = response.data.data.classInfo;
+              if (response.data.status == 1) {
+                _this.$q.notify({
+                type: 'negative',
+               message: '该院系内仍有学生，无法删除该院系'
+               })
+              }
+              else {
+                _this.$q.notify({message: '院系删除成功！',
+                color: "green-4"})
+              }
             })
             .catch(function (error) {
               // handle error
@@ -444,8 +472,8 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '班级已经删除！',
-color: "green-4"})
+//         this.$q.notify({message: '班级已经删除！',
+// color: "green-4"})
       }
       )
       

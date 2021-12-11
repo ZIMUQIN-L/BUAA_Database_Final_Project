@@ -159,6 +159,12 @@
           </template>
         </q-input>
 
+        <q-input v-model="teacherTitle" :readonly="true" label="职称">
+          <template v-slot:prepend>
+            <q-icon name="folder"></q-icon>
+          </template>
+        </q-input>
+
         <q-input v-model="teacherPhone" :readonly="!readonly" label="联系电话">
           <template v-slot:prepend>
             <q-icon name="phone"></q-icon>
@@ -189,9 +195,10 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
-export default({
+export default{
   data () {
     var teaId = this.$route.params.teacherId
     const leftDrawerOpen = ref(false)
@@ -203,6 +210,7 @@ export default({
       teacherName: ref(''),
       teacherPhone: ref(''),
       teacherMail: ref(''),
+      teacherTitle: ref(''),
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -216,6 +224,23 @@ export default({
 
   methods:{
     logout:function() {
+axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -252,8 +277,9 @@ export default({
           // handle success
           _this.teacherId = response.data.data.info.teacherId;
           _this.teacherName = response.data.data.info.teacherName;
+          _this.teacherTitle = response.data.data.info.teacherTitle;
           _this.teacherPhone = response.data.data.info.teacherTel;
-          _this.teacherMail = response.data.data.info.teacherMail;
+          _this.teacherMail = response.data.data.info.teacherEmail;
           console.log(response);
         })
         .catch(function (error) {
@@ -290,7 +316,7 @@ export default({
         });
     }
   }
-})
+}
 </script>
 
 <style>

@@ -160,6 +160,11 @@
           <div class="self-center full-width no-outline" tabindex="0">{{DpMaster}}</div>
         </template>
       </q-field>
+      <q-field color="grey-8" label-color="grey-10" outlined label="院系学分要求" stack-label>
+        <template v-slot:control>
+          <div class="self-center full-width no-outline" tabindex="0">{{DpScore}}</div>
+        </template>
+      </q-field>
       </q-card-section>
     </q-card>
     <q-separator inset="item" />
@@ -196,9 +201,10 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
-export default({
+export default{
   data () {
     var teaId = this.$route.params.teacherId
     const leftDrawerOpen = ref(false)
@@ -208,6 +214,7 @@ export default({
       DpNumber: null,
       DpMaster: null,
       DpName: null,
+      DpScore: null,
       teacherId: ref(teaId),
       readonly: ref(false),
       teacherName: ref(''),
@@ -246,6 +253,23 @@ export default({
 
   methods:{
     logout:function() {
+axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -283,6 +307,7 @@ export default({
           _this.DpName = response.data.data.depart.DpName;
           _this.DpNumber = response.data.data.depart.DpNumber;
           _this.DpMaster = response.data.data.depart.DpMaster;
+          _this.DpScore = response.data.data.depart.DpScore;
           console.log(response);
         })
         .catch(function (error) {
@@ -316,7 +341,7 @@ export default({
       console.log("success!");
     }
   }
-})
+}
 </script>
 
 <style>

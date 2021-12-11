@@ -31,7 +31,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -155,7 +155,7 @@
         <q-card-section class="q-pt-none">
    <q-input
         v-model="newId"
-        label="学号"
+        label="工号"
         style="width: 400px"
       />
 
@@ -167,6 +167,8 @@
       <q-input
         v-model="newPhone"
         label="联系电话"
+        lazy-rules
+        :rules="[ val => val && val.length == 11 || '请输入正确的电话号码']"
       />
 
       <q-input
@@ -177,6 +179,8 @@
       <q-input
         v-model="newIdNumber"
         label="身份证号"
+        lazy-rules
+        :rules="[ val => val && val.length == 18 || '请输入正确的身份证号']"
       />
 
       <q-input
@@ -212,7 +216,7 @@
     <q-card-section class="q-pt-none">
       <q-input
         v-model="oldId"
-        label="学号"
+        label="工号"
         style="width: 400px"
       />
 
@@ -224,6 +228,8 @@
       <q-input
         v-model="oldPhone"
         label="联系电话"
+        lazy-rules
+        :rules="[ val => val && val.length == 11 || '请输入正确的电话号码']"
       />
 
       <q-input
@@ -234,6 +240,8 @@
       <q-input
         v-model="oldIdNumber"
         label="身份证号"
+        lazy-rules
+        :rules="[ val => val && val.length == 18 || '请输入正确的身份证号']"
       />
 
       <q-input
@@ -417,6 +425,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -471,6 +480,23 @@ export default{
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {

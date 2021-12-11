@@ -31,7 +31,7 @@
             </q-item-section>
 
               <q-item-section>
-                专业信息
+                院系信息
               </q-item-section>
             </q-item>
 
@@ -230,6 +230,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -288,6 +289,23 @@ export default({
 
   methods:{
     logout:function() {
+       axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -339,6 +357,16 @@ let _this = this;
             }
           }).then(function (response) {
               // handle success
+              if (response.data.status == 1) {
+                _this.$q.notify({
+                type: 'negative',
+               message: '该课程已经结束，无法进行退课操作'
+               })
+              }
+              else {
+                this.$q.notify({message: '课程已经删除！',
+                color: "green-4"})
+              }
               console.log(response);
               _this.rows_selected = response.data.data.courseTable;
               _this.rows_unselected = response.data.data.unCourseTable;
@@ -352,13 +380,20 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '课程已经删除！',
-color: "green-4"})
+       
       }
       )
       
     },
     addSelectedCourse(){
+    if (this.unselected[0].nowSum >= this.unselected[0].capacity) {
+        this.$q.notify({
+          type: 'negative',
+          message: '该课程容量已满，无法进行选课操作'
+        })
+        this.unselected = []
+        return
+      }
       this.$q.dialog({
         title: '确认',
         message: '是否添加该课程',

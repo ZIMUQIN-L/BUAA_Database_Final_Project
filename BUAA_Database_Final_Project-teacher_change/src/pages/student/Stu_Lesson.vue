@@ -235,6 +235,7 @@
 <script>
 import { ref } from 'vue'
 import axios from 'axios'
+axios.defaults.withCredentials = true;
 import VueAxios from 'vue-axios';
 
 const columns = [
@@ -253,6 +254,7 @@ const columns = [
   { name: 'credit', align: 'center', label: '学分', field: 'credit', sortable: true },
   { name: 'time', align: 'center', label: '上课时间', field: 'time', sortable: true },
   { name: 'place', align: 'center', label: '上课地点', field: 'place', sortable: true },
+  { name: 'nowSum', align: 'center', label: '当前选课人数', field: 'nowSum', sortable: true },
   { name: 'capacity', align: 'center', label: '课程容量', field: 'capacity', sortable: true },
   { name: 'exam', align: 'center', label: '考核方式', field: 'exam', sortable: true },
   { name: 'teacher', align: 'center', label: '授课教师', field: 'teacher', sortable: true}
@@ -261,7 +263,7 @@ const columns = [
 var rows_selected = [];
 var rows_unselected = [];
 
-export default({
+export default{
   
   data () {
     const loading = ref(false)
@@ -299,6 +301,23 @@ export default({
 
   methods:{
     logout:function() {
+axios({
+            method: 'POST',
+            url: 'http://localhost:8000/back/getout/',
+            data: {
+                "operation": "getout"
+            }
+          }).then(function (response) {
+              // handle success
+              console.log(response);
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error);
+            })
+            .then(function () {
+              // always executed
+            });
       this.$router.push('/')
     },
     goToHomepage() {
@@ -315,6 +334,12 @@ export default({
     },
     goToInfo() {
       this.$router.push('/student/info/' + this.$route.params.studentId)
+    },
+    goToDepart() {
+      this.$router.push('/student/depart/' + this.$route.params.studentId)
+    },
+    goToClassRoom() {
+      this.$router.push('/student/classroom/' + this.$route.params.studentId)
     },
     goToGrade() {
       this.$router.push('/student/grade/' + this.$route.params.studentId)
@@ -339,9 +364,9 @@ return item;
 let _this = this;
           axios({
             method: 'POST',
-            url: 'http://localhost:8000/student/lesson/',
+            url: 'http://localhost:8000/student/lesson/delete/',
             data: {
-                "userId": this.studentId,
+                "studentId": this.studentId,
                 "courseId": c_id,
                 "operation": "delete"
             }
@@ -350,6 +375,17 @@ let _this = this;
               console.log(response);
               _this.rows_selected = response.data.data.courseTable;
               _this.rows_unselected = response.data.data.unCourseTable;
+              if (response.data.status == 1) {
+                _this.$q.notify({
+                type: 'negative',
+               message: '该课程已经结束，无法进行退课操作'
+               })
+              }
+              else {
+                _this.$q.notify({message: '课程已经删除！',
+                color: "green-4"})
+              }
+            
             })
             .catch(function (error) {
               // handle error
@@ -360,13 +396,21 @@ let _this = this;
             });
         // });
         this.selected = [];
-        this.$q.notify({message: '课程已经删除！',
-color: "green-4"})
+//         this.$q.notify({message: '课程已经删除！',
+// color: "green-4"})
       }
       )
       
     },
     addSelectedCourse(){
+      if (this.unselected[0].nowSum >= this.unselected[0].capacity) {
+        this.$q.notify({
+          type: 'negative',
+          message: '该课程容量已满，无法进行选课操作'
+        })
+        this.unselected = []
+        return
+      }
       this.$q.dialog({
         title: '确认',
         message: '是否添加该课程',
@@ -394,9 +438,9 @@ color: "green-4"})
 let _this = this
         axios({
           method: "POST",
-          url: "http://localhost:8000/student/lesson/",
+          url: "http://localhost:8000/student/lesson/select/",
           data: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "courseId": c_id,
             "operation": "select"
           }
@@ -429,9 +473,9 @@ let _this = this
 let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/querySelected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "searchText": "",
             "operation": "selected"
         }
@@ -458,15 +502,15 @@ let _this = this
   let _this = this
       axios({
         method: 'GET',
-        url: 'http://localhost:8000/student/lesson/',
+        url: 'http://localhost:8000/student/lesson/queryUnselected/',
         params: {
-            "userId": this.studentId,
+            "studentId": this.studentId,
             "searchText": "",
             "operation": "unselected"
         }
       }).then(function (response) {
           // handle success
-          _this.rows_unselected = response.data.data.courseTable;
+          _this.rows_unselected = response.data.data.unCourseTable;
           console.log(response);
         })
         .catch(function (error) {
@@ -478,7 +522,7 @@ let _this = this
         });
     },
   }
-})
+}
 </script>
 
 <style>
