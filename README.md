@@ -1,7 +1,7 @@
 # Educational Administration System (educational-administration-system)
 
 an educational administration system for students and teachers
-
+（基于MySQL和Vue开发的教务管理系统）
 ## Install the dependencies
 ```bash
 yarn
